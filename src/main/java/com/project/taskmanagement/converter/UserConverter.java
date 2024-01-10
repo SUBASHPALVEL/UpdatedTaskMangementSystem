@@ -22,7 +22,7 @@ public class UserConverter {
         userEntity.setUserMail(userDTO.getUserMail());
         userEntity.setPassword(userDTO.getPassword());
         userEntity.setRoleId(userDTO.getRoleId());
-        userEntity.se
+        userEntity.setActive(userDTO.isActive());
         return userEntity;
 
     }
