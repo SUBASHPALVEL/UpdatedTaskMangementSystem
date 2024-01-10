@@ -1,5 +1,25 @@
 package com.project.taskmanagement.converter;
 
+import com.project.taskmanagement.dto.TaskDTO;
+import com.project.taskmanagement.entity.TaskEntity;
+
 public class TaskConverter {
     
+    public static TaskDTO convertToDTO(TaskEntity taskEntity){
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTaskId(taskEntity.getTaskId());
+        taskDTO.setTitle(taskEntity.getTitle());
+        taskDTO.setDescription(taskEntity.getDescription());
+        taskDTO.setStatus(taskEntity.getStatus());
+        taskDTO.setPriority(taskEntity.getPriority());
+        taskDTO.setDueDate(taskEntity.getDueDate());
+        return taskDTO;
+    }
+
+    public static TaskEntity convertToEntity(TaskDTO taskDTO) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setTitle(taskDTO.getTitle());
+        taskEntity.setDescription(taskDTO.getDescription());
+        
+    }
 }
