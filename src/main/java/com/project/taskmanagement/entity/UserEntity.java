@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(name = "user_name", nullable = false,unique = true)
     private String userName;
 
-    
+    @Size(min=2, max=150,message = "User Mail must be between 02 and 150 of size")
     @Column(name = "user_mail", nullable = false,unique = true)
     private String userMail;
 

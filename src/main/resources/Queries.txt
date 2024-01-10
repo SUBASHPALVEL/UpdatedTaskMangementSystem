@@ -1,0 +1,49 @@
+CREATE TABLE priority (
+    priority_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    priority_status VARCHAR(50) NOT NULL UNIQUE
+);
+
+
+CREATE TABLE roles (
+    role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    designation VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE status (
+    status_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    status_level VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE tasks (
+    task_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    status_id BIGINT,
+    priority_id BIGINT,
+    due_Date DATE,
+    created_Date DATE,
+    completed_Date DATE,
+    modified_Date DATE,
+    FOREIGN KEY (status_id) REFERENCES status (status_id),
+    FOREIGN KEY (priority_id) REFERENCES priority (priority_id)
+);
+
+CREATE TABLE user_detail (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL UNIQUE,
+    user_mail VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL,
+    designation BIGINT,
+    is_active BOOLEAN NOT NULL,
+    FOREIGN KEY (designation) REFERENCES roles (role_id)
+);
+
+
+CREATE TABLE tasks_users (
+    task_id BIGINT,
+    user_id BIGINT,
+    PRIMARY KEY (task_id, user_id),
+    FOREIGN KEY (task_id) REFERENCES tasks (task_id),
+    FOREIGN KEY (user_id) REFERENCES user_detail (user_id)
+);
+
