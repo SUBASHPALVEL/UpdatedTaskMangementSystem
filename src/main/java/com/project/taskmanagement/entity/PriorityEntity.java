@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,16 +14,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="roles")
-public class RoleEntity {
+@Table(name="priority")
+public class PriorityEntity {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="role_id")
-    private Long roleId;
+    @Column(name="priority_id")
+    private Long priorityId;
 
-    @Size(min=2, max=50,message = "Designation must be between 02 and 50 of size")
-    @Column(name="designation", nullable = false, unique = true)
-    private String designation;
+    @NotNull
+    @Size(min=2, max=50,message = "Priority must be between 02 and 50 of size")
+    @Column(name="priority_status", nullable = false, unique = true)
+    private String priorityStatus;
 
 }
+
+
+

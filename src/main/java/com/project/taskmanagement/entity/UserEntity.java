@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,18 +20,24 @@ public class UserEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "username", nullable = false)
-    private String username;
+    @Size(min=2, max=50,message = "User Name must be between 02 and 50 of size")
+    @Column(name = "user_name", nullable = false,unique = true)
+    private String userName;
 
-    @Column(name = "usermail", nullable = false)
-    private String usermail;
+    
+    @Column(name = "user_mail", nullable = false,unique = true)
+    private String userMail;
 
+    @Size(min=2, max=50,message = "Password must be between 02 and 50 of size")
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name="role", nullable = false)
-    private RoleEntity role;
+    @ManyToOne
+    @JoinColumn(name="designation")
+    private RoleEntity roleId;
 
+    @Column(name="is_active", nullable = false)
+    private boolean isActive;
 
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();

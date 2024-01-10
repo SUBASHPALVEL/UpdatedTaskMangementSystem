@@ -3,8 +3,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +31,7 @@ public class TaskEntity {
     @Column(name = "task_id")
     private Long taskId;
 
+    @Size(min=2, max=100,message = "Title must be between 02 and 150 of size")
     @Column(name = "title", nullable = false)
     @NotNull
     private String title;
@@ -26,13 +39,13 @@ public class TaskEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "status", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "status_id") 
+    private StatusEntity status;
 
-    private Status status;
-
-    @Column(name = "priority", nullable = false)
-
-    private Priority priority;
+    @ManyToOne
+    @JoinColumn(name = "priority_id")
+    private PriorityEntity priority;
 
     @Column(name = "due_Date")
     @Temporal(TemporalType.DATE)
