@@ -1,8 +1,10 @@
 package com.project.taskmanagement.converter;
 
+import org.springframework.stereotype.Component;
+
 import com.project.taskmanagement.dto.TaskDTO;
 import com.project.taskmanagement.entity.TaskEntity;
-
+@Component
 public class TaskConverter {
     
     public static TaskDTO convertToDTO(TaskEntity taskEntity){
@@ -20,6 +22,12 @@ public class TaskConverter {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setTitle(taskDTO.getTitle());
         taskEntity.setDescription(taskDTO.getDescription());
-        
+        taskEntity.setStatus(taskDTO.getStatus());
+        taskEntity.setPriority(taskDTO.getPriority());
+        taskEntity.setDueDate(taskDTO.getDueDate());
+        taskEntity.setCreatedDate(taskDTO.getCreatedDate());
+        taskEntity.setCompletedDate(taskDTO.getCompletedDate());
+        taskEntity.setModifiedDate(taskDTO.getModifiedDate());
+        return taskEntity;
     }
 }
