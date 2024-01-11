@@ -106,6 +106,7 @@ public class TaskServiceImpl implements TaskService{
                 updatedAssignedUsersEntities.add(updatedUserEntity);
             }
             updatedTaskEntity.setAssignedUsers(updatedAssignedUsersEntities);
+            updatedTaskEntity.setTaskId(taskId);
             taskRepository.save(updatedTaskEntity);
             return "Task updated successfully";
         }
