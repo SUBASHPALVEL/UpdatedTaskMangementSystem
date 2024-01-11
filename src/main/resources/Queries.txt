@@ -47,3 +47,5 @@ CREATE TABLE tasks_users (
     FOREIGN KEY (user_id) REFERENCES user_detail (user_id)
 );
 
+
+

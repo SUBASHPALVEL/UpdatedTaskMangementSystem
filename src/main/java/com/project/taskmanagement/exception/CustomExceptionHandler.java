@@ -15,4 +15,5 @@ public class CustomExceptionHandler {
         System.out.println("BusinessException Is Occurred");
         return new ResponseEntity<List<ErrorModel>>(bex.getErrors(), HttpStatus.BAD_REQUEST);
     }
+
 }

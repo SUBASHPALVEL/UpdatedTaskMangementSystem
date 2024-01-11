@@ -11,7 +11,11 @@ public class UserConverter {
     public static UserDTO convertToDTO(UserEntity userEntity) {
     UserDTO userDTO = new UserDTO();
     userDTO.setUserId(userEntity.getUserId());
+    userDTO.setUserName(userEntity.getUserName());
+    userDTO.setUserMail(userEntity.getUserMail());
+    userDTO.setPassword(userEntity.getPassword());
     userDTO.setRoleId(userEntity.getRoleId());
+    userDTO.setActive(userEntity.isActive());
     return userDTO;
 }
 

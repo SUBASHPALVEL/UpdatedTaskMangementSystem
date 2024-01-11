@@ -27,6 +27,7 @@ public class UserDTO {
     @NotNull(message = "Password is mandatory")
     private String password;
 
+    @NotNull(message = "Role is mandatory")
     private RoleEntity roleId;
 
     @NotNull(message = "Is Active is mandatory")
