@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService{
             }
         } else {
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
+            newUser.setActive(true);
             userRepository.save(newUser);
             return "User created successfully";
         }

@@ -63,15 +63,14 @@ public class TaskEntity {
     @Temporal(TemporalType.DATE)
     private LocalDate modifiedDate;
 
-    @ManyToMany
+    @Column(name="is_active", nullable = false,columnDefinition = "boolean default true")
+    private boolean isActive;
+
     @JoinTable(name="tasks_users",
                     joinColumns = @JoinColumn(name="taskId"),
                     inverseJoinColumns = @JoinColumn(name="userId")
     )
-
-    @Column(name="is_active", nullable = false,columnDefinition = "boolean default true")
-    private boolean isActive;
-
+    @ManyToMany
     private List<UserEntity> assignedUsers = new ArrayList<>();
     
 }
