@@ -36,7 +36,7 @@ public class UserEntity {
     @JoinColumn(name="designation")
     private RoleEntity roleId;
 
-    @Column(name="is_active", nullable = false)
+    @Column(name="is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
     @ManyToMany(mappedBy = "assignedUsers")

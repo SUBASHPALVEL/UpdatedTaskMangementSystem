@@ -68,6 +68,10 @@ public class TaskEntity {
                     joinColumns = @JoinColumn(name="taskId"),
                     inverseJoinColumns = @JoinColumn(name="userId")
     )
+
+    @Column(name="is_active", nullable = false,columnDefinition = "boolean default true")
+    private boolean isActive;
+
     private List<UserEntity> assignedUsers = new ArrayList<>();
     
 }

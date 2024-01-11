@@ -24,6 +24,7 @@ CREATE TABLE tasks (
     created_Date DATE,
     completed_Date DATE,
     modified_Date DATE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE;
     FOREIGN KEY (status_id) REFERENCES status (status_id),
     FOREIGN KEY (priority_id) REFERENCES priority (priority_id)
 );
@@ -34,7 +35,7 @@ CREATE TABLE user_detail (
     user_mail VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(50) NOT NULL,
     designation BIGINT,
-    is_active BOOLEAN NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE;
     FOREIGN KEY (designation) REFERENCES roles (role_id)
 );
 
