@@ -76,10 +76,6 @@ public class RoleServiceImpl implements RoleService {
             rolesDTOs.add(roleDTO);
         }
         return rolesDTOs;
-        // return roleRepository.findAll()
-        //         .stream()
-        //         .map(roleEntity -> new RoleDTO(roleEntity.getRoleId(), roleEntity.getDesignation()))
-        //         .collect(Collectors.toList());
 
     }
 
