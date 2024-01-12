@@ -54,15 +54,15 @@ public class SecurityConfiguration {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/auth/**").permitAll();
-                auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+                auth.requestMatchers("/login").permitAll();
+                auth.requestMatchers("/users/**").hasRole("ADMIN");
+                auth.requestMatchers("/tasks/**").hasAnyRole("ADMIN", "USER");
                 auth.anyRequest().authenticated();
             });
             
         http.oauth2ResourceServer()
-                .jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter());
+            .jwt() .jwtAuthenticationConverter(jwtAuthenticationConverter());
+            
         http.sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
