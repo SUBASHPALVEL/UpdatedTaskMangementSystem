@@ -6,13 +6,13 @@ import com.project.taskmanagement.dto.RoleDTO;
 
 public interface RoleService {
 
-    void createRole(RoleDTO roleDTO);
+    String createRole(RoleDTO roleDTO);
 
     RoleDTO getRoleByUserId(Long userId);
 
     List<RoleDTO> getAllRoles();
 
-    void updateRole(Long roleId, RoleDTO roleDTO);
+    String updateRole(Long roleId, RoleDTO roleDTO);
 
-    void deleteRole(Long roleId);
+    String deleteRole(Long roleId);
 }

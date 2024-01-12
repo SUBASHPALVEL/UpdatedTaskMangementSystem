@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
     private UserRepository userRepository;
 
     @Override
-    public void createRole(RoleDTO roleDTO) {
+    public String createRole (RoleDTO roleDTO) {
         if (roleRepository.existsByDesignation(roleDTO.getDesignation())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
@@ -43,6 +43,7 @@ public class RoleServiceImpl implements RoleService {
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setDesignation(roleDTO.getDesignation());
         roleRepository.save(roleEntity);
+        return "Role created successfully";
     }
 
     @Override
@@ -80,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void updateRole(Long roleId, RoleDTO roleDTO) {
+    public String updateRole(Long roleId, RoleDTO roleDTO) {
         Optional<RoleEntity> optionalRoleEntity = roleRepository.findById(roleId);
         if (optionalRoleEntity.isEmpty()) {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -94,10 +95,11 @@ public class RoleServiceImpl implements RoleService {
         RoleEntity roleEntity = optionalRoleEntity.get();
         roleEntity.setDesignation(roleDTO.getDesignation());
         roleRepository.save(roleEntity);
+        return "Role is updated successfully";
     }
 
     @Override
-    public void deleteRole(Long roleId) {
+    public String deleteRole(Long roleId) {
         if (!roleRepository.existsById(roleId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
@@ -108,5 +110,6 @@ public class RoleServiceImpl implements RoleService {
         }
 
         roleRepository.deleteById(roleId);
+        return "Role deleted";
     }
 }
