@@ -85,13 +85,26 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public List<TaskDTO> getTasksByUserId(Long userId) {
-        List<TaskEntity> tasks = taskRepository.findByAssignedUsers_UserIdAndIsActiveTrue(userId);
+        List<TaskEntity> tasks = taskRepository.findByAssignedUsers_UserIdAndIsActiveTrue(userId); 
         List<TaskDTO> taskDTOList = new ArrayList<>();
         for (TaskEntity task : tasks) {
+            List<UserEntity> usersEntities = task.getAssignedUsers();
+            List<UserDTO> usersDTOList = new ArrayList<>();
+            for (UserEntity user : usersEntities) {
+                usersDTOList.add(UserConverter.convertToDTO(user));
+            }
+
             TaskDTO taskDTO = taskConverter.convertToDTO(task);
+            taskDTO.setAssignedUsers(usersDTOList);
             taskDTOList.add(taskDTO);
         }
         return taskDTOList;
+        // List<TaskDTO> taskDTOList = new ArrayList<>();
+        // for (TaskEntity task : tasks) {
+        //     TaskDTO taskDTO = taskConverter.convertToDTO(task);
+        //     taskDTOList.add(taskDTO);
+        // }
+        // return taskDTOList;
     }
 
     @Override
