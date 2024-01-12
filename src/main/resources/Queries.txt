@@ -49,4 +49,20 @@ CREATE TABLE tasks_users (
 );
 
 
+--For Assigned tasks
+
+SELECT *
+FROM tasks
+JOIN tasks_users ON tasks.task_id = tasks_users.task_id
+JOIN user_detail ON tasks_users.user_id = user_detail.user_id
+WHERE user_detail.user_id = 1;
+
+--For Assigned Users
+
+SELECT *
+FROM user_detail
+JOIN tasks_users ON user_detail.user_id = tasks_users.user_id
+JOIN tasks ON tasks_users.task_id = tasks.task_id
+WHERE tasks.task_id = 1;
+
 
