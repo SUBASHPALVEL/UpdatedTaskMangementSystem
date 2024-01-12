@@ -14,4 +14,8 @@ public interface UserService {
     String updateUser(Long userId, UserDTO userDTO);
 
     String deleteUser(Long userId);
+
+    String createAdminUser(UserDTO userDTO);
+
+    String loginAdminUser(String userMail, String password);
 }

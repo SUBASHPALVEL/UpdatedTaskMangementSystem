@@ -25,4 +25,5 @@ public class RoleEntity {
     @Column(name="designation", nullable = false, unique = true)
     private String designation;
 
+
 }

@@ -6,17 +6,30 @@ import java.util.Optional;
 
 // import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
+import com.project.taskmanagement.converter.RoleConverter;
 import com.project.taskmanagement.converter.UserConverter;
+import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.dto.UserDTO;
+import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.service.TokenService;
 import com.project.taskmanagement.service.UserService;
 
+
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
 
     @Autowired
@@ -24,6 +37,18 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserConverter userConverter;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public String createUser(UserDTO userDTO) {
@@ -122,5 +147,66 @@ public class UserServiceImpl implements UserService{
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
+    }
+
+    @Override
+    public String createAdminUser(UserDTO userDTO) {
+        Optional<UserEntity> existingUser = userRepository.findByUserMail(userDTO.getUserMail());
+
+        if (existingUser.isPresent()) {
+            if (existingUser.get().isActive()) {
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode("USER_EXISTS");
+                errorModel.setMessage("User Mail is already registered");
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
+
+            } else {
+                existingUser.get().setActive(true);
+                RoleDTO adminDTO = new RoleDTO();
+                adminDTO.setRoleId((long) 1);
+                existingUser.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
+                userRepository.save(existingUser.get());
+                return "User is Re-registered and activated";
+            }
+        } else {
+
+            UserEntity newUser = UserConverter.convertToEntity(userDTO);
+            
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+
+            
+            newUser.setActive(true);
+
+            RoleEntity adminEntity = new RoleEntity();
+            adminEntity.setRoleId((long) 1);
+            newUser.setRoleId(adminEntity);
+
+            newUser.setPassword(encodedPassword);
+
+            userRepository.save(newUser);
+            return "User created successfully";
+        }
+    }
+    
+    @Override
+    public String loginAdminUser (String userMail, String password){
+
+
+         try{
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userMail, password)
+            );
+
+            String token = tokenService.generateJwt(auth);
+
+            return token;
+
+        } catch(AuthenticationException e){
+            return "Authentication error: " + e.getMessage();
+        }
+
     }
 }
