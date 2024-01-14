@@ -1,8 +1,14 @@
 package com.project.taskmanagement.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -13,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "user_detail")
-public class UserEntity  {
+public class UserEntity implements UserDetails  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +48,56 @@ public class UserEntity  {
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
+
+
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+         List<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + getRoleId().getDesignation()));
+
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+       return userName;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+     public UserEntity() {
+		super();
+	}
+	
+
+	public UserEntity(Long userId, String username, String password, RoleEntity roleId) {
+		super();
+		this.userId = userId;
+		this.userName = username;
+		this.password = password;
+		this.roleId = roleId;
+	}
     
 }

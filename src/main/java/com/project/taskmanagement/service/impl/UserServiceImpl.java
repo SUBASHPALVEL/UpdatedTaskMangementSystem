@@ -1,29 +1,39 @@
 package com.project.taskmanagement.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 // import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.UserDTO;
+import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
 import com.project.taskmanagement.service.UserService;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserConverter userConverter;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public String createUser (UserDTO userDTO) {
@@ -122,5 +132,15 @@ public class UserServiceImpl implements UserService {
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        System.out.println("In the user details service");
+        if (!username.equals("suba")) throw new UsernameNotFoundException("NOT suba");
+
+        RoleEntity role = new RoleEntity((long) 1,"ADMIN");
+        return new UserEntity((long)1,"suba",encoder.encode("password"),role);
     }
 }
