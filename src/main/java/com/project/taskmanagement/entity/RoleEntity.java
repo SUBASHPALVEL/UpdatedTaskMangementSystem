@@ -42,4 +42,12 @@ public class RoleEntity implements GrantedAuthority {
         return designation;
     }
 
+    public RoleEntity(String designation){
+        this.designation = designation;
+    }
+
+    public RoleEntity(Long roleId){
+        this.roleId = roleId;
+    }
+
 }

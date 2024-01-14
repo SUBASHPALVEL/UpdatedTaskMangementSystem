@@ -138,9 +138,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         System.out.println("In the user details service");
-        if (!username.equals("suba")) throw new UsernameNotFoundException("NOT suba");
-
-        RoleEntity role = new RoleEntity((long) 1,"ADMIN");
-        return new UserEntity((long)1,"suba",encoder.encode("password"),role);
+        return userRepository.findByUserName(username).orElseThrow(()->new UsernameNotFoundException("UserMail not found"));
     }
 }

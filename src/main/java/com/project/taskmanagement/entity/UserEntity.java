@@ -2,9 +2,7 @@ package com.project.taskmanagement.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,7 +32,7 @@ public class UserEntity implements UserDetails  {
     @Column(name = "user_mail", nullable = false,unique = true)
     private String userMail;
 
-    @Size(min=2, max=50,message = "Password must be between 02 and 50 of size")
+    @Size(min=2, max=60,message = "Password must be between 02 and 60 of size")
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -99,5 +97,14 @@ public class UserEntity implements UserDetails  {
 		this.password = password;
 		this.roleId = roleId;
 	}
+
+    public UserEntity(Long userId, String username, String password, RoleEntity roleId, String userMail) {
+		super();
+		this.userId = userId;
+		this.userName = username;
+		this.password = password;
+		this.roleId = roleId;
+        this.userMail = userMail;
+    }
+	}
     
-}
