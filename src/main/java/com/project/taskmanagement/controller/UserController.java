@@ -69,18 +69,5 @@ public class UserController {
         }
     }
 
-     @PostMapping("/admin")
-    public ResponseEntity<String> createAdminUser(@RequestBody UserDTO userDTO) {
-        try {
-            String result = userService.createAdminUser(userDTO);
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
-        } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/admin/login")
-    public String loginUser(@RequestBody UserDTO body){
-        return userService.loginAdminUser(body.getUserMail(), body.getPassword());
-    }
+     
 }

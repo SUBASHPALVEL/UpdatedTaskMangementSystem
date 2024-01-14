@@ -11,7 +11,7 @@ public class UserConverter {
     public static UserDTO convertToDTO(UserEntity userEntity) {
     UserDTO userDTO = new UserDTO();
     userDTO.setUserId(userEntity.getUserId());
-    userDTO.setUserName(userEntity.getUserName());
+    userDTO.setName(userEntity.getName());
     userDTO.setUserMail(userEntity.getUserMail());
     userDTO.setPassword(userEntity.getPassword());
     userDTO.setRoleId(userEntity.getRoleId());
@@ -22,7 +22,7 @@ public class UserConverter {
     public static UserEntity convertToEntity(UserDTO userDTO){
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(userDTO.getUserId());
-        userEntity.setUserName(userDTO.getUserName());
+        userEntity.setName(userDTO.getName());
         userEntity.setUserMail(userDTO.getUserMail());
         userEntity.setPassword(userDTO.getPassword());
         userEntity.setRoleId(userDTO.getRoleId());

@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService{
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            user.setUserName(userDTO.getUserName());
+            user.setName(userDTO.getName());
             user.setUserMail(userDTO.getUserMail());
             user.setPassword(userDTO.getPassword());
             user.setRoleId(userDTO.getRoleId());
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService{
     public String loginAdminUser (String userMail, String password){
 
 
-         try{
+        try{
             Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userMail, password)
             );

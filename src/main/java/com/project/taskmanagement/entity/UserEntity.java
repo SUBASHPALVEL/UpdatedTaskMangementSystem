@@ -27,7 +27,7 @@ public class UserEntity implements UserDetails {
 
     @Size(min=2, max=50,message = "User Name must be between 02 and 50 of size")
     @Column(name = "user_name", nullable = false,unique = true)
-    private String userName;
+    private String name;
 
     @Size(min=2, max=150,message = "User Mail must be between 02 and 150 of size")
     @Column(name = "user_mail", nullable = false,unique = true)
@@ -59,7 +59,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername(){
-        return userMail;
+        return name;
     }
 
     @Override

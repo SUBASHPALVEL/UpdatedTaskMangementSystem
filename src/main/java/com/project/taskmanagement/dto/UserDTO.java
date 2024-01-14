@@ -18,7 +18,7 @@ public class UserDTO {
 
     @NotNull(message = "User Name is mandatory")
     @NotEmpty(message = "User Name cannot be empty")
-    private String userName;
+    private String name;
 
     @NotNull(message = "user Mail is mandatory")
     @NotEmpty(message = "User Mail cannot be empty")
