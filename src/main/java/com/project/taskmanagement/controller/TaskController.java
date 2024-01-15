@@ -19,7 +19,7 @@ import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.TaskService;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
