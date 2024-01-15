@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserConverter userConverter;
 
     @Autowired
-    private PasswordEncoder encoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public String createUser (UserDTO userDTO) {
@@ -56,6 +56,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
             newUser.setActive(true);
+            
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            newUser.setPassword(encodedPassword);
+
+
             userRepository.save(newUser);
             return "User created successfully";
         }
@@ -66,8 +72,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<UserEntity> users = userRepository.findByIsActiveTrue();
         List<UserDTO> userDTOList = new ArrayList<>();
         for (UserEntity user : users) {
-            //
-            //
             UserDTO userDTO = UserConverter.convertToDTO(user);
             userDTOList.add(userDTO);
         }
@@ -102,7 +106,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity user = userOptional.get();
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
-            user.setPassword(userDTO.getPassword());
+
+
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            user.setPassword(encodedPassword);
+
+
             user.setRoleId(userDTO.getRoleId());
             userRepository.save(user);
             return "User updated successfully";

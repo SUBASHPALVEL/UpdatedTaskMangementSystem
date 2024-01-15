@@ -37,7 +37,7 @@ public class UserEntity implements UserDetails  {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name="designation")
+    @JoinColumn(name="designation", nullable = false)
     private RoleEntity roleId;
 
     @Column(name="is_active", nullable = false, columnDefinition = "boolean default true")
