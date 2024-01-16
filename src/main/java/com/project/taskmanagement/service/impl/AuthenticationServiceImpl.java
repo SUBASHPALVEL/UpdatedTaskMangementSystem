@@ -43,6 +43,9 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserConverter userConverter;
+
     @Override
     public String createAdminUser (UserDTO userDTO) {
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDTO.getUserName());
@@ -86,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     }
     
     @Override
-    public String loginAdminUser (String userName, String password) {
+    public UserDTO loginAdminUser (String userName, String password) {
 
 
          try{
@@ -96,10 +99,29 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
             String token = tokenService.generateJwt(auth);
 
-            return token;
+            Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
+            if(userOptional.isPresent())
+            {
+            UserEntity userEntity = userOptional.get();
+                UserDTO userDTO = userConverter.convertToDTO(userEntity);
+                userDTO.setToken(token);
+                return userDTO;
+            } else{
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode("USER_NOT_FOUND");
+            errorModel.setMessage("User not found");
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
+            }
 
         } catch(AuthenticationException e){
-            return "Authentication error: " + e.getMessage();
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode("AUTHENTICATION__ERROR");
+            errorModel.setMessage("Authentication error");
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
     }
     
