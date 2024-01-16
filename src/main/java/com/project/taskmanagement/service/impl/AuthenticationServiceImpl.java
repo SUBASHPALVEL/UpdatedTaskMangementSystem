@@ -61,6 +61,12 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
             } else {
                 existingUser.get().setActive(true);
+
+               
+                String password = userDTO.getPassword();
+                String encodedPassword = passwordEncoder.encode(password);
+                existingUser.get().setPassword(encodedPassword);
+
                 RoleDTO adminDTO = new RoleDTO();
                 adminDTO.setRoleId((long) 1);
                 existingUser.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
