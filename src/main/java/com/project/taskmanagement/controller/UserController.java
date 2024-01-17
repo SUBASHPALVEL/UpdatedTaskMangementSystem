@@ -23,7 +23,7 @@ import com.project.taskmanagement.service.UserService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired

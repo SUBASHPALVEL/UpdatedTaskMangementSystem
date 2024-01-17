@@ -22,7 +22,7 @@ import com.project.taskmanagement.service.TaskService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
     @Autowired
