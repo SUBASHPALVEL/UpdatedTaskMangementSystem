@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setUserMail(userDTO.getUserMail());
 
 
-            String password = userDTO.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-            user.setPassword(encodedPassword);
+            // String password = userDTO.getPassword();
+            // String encodedPassword = passwordEncoder.encode(password);
+            // user.setPassword(encodedPassword);
 
 
             user.setRoleId(userDTO.getRoleId());
