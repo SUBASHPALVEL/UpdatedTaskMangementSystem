@@ -85,6 +85,3 @@ JOIN tasks_users ON user_detail.user_id = tasks_users.user_id
 JOIN tasks ON tasks_users.task_id = tasks.task_id
 WHERE tasks.task_id = 1
 AND user_detail.is_active = 1 ;
-
-
- 
