@@ -58,7 +58,12 @@ public class ReportServiceImpl implements ReportService{
             priorityCounts.put(priorityStatus, priorityCounts.getOrDefault(priorityStatus, 0L)+1);
         }
 
-        
+        Map<String,Long> designationCounts = new HashMap<String,Long>();
+
+        for(UserDTO user: allUsers) {
+            String userDesignation = user.getRoleId().getDesignation();
+            designationCounts.put(userDesignation, designationCounts.getOrDefault(userDesignation, 0L)+1);
+        }
 
 
         Map<String, Object> report = Map.of(
@@ -68,9 +73,8 @@ public class ReportServiceImpl implements ReportService{
             "averageTasksPerUser", averageTaskPerUser,
             "averageAssignmentPerTask ", averageAssignmentPerTask ,
             "statusCounts", statusCounts,
-            "priorityCounts", priorityCounts
-
-
+            "priorityCounts", priorityCounts,
+            "designationCounts",designationCounts
         );
         return report;
     }
