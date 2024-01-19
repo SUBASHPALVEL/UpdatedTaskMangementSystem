@@ -23,7 +23,7 @@ public class ReportController {
     public ResponseEntity<Map<String, Object>> getTaskVsAssignReport() {
         try {
             Map<String, Object> result = reportService.getTaskVsAssignReport();
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

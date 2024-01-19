@@ -1,5 +1,6 @@
 package com.project.taskmanagement.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,12 +44,31 @@ public class ReportServiceImpl implements ReportService{
         double averageAssignmentPerTask = (totalTasks > 0) ? (double) totalAssignments/totalTasks : (double) 0; 
         double averageTaskPerUser = (totalUsers > 0 ) ? (double) totalTasks/totalUsers : (double) 0;
 
+        Map<String,Long> statusCounts = new HashMap<String,Long>();
+
+        for(TaskDTO task: allTasks) {
+            String statusLevel = task.getStatus().getStatusLevel();
+            statusCounts.put(statusLevel, statusCounts.getOrDefault(statusLevel, 0L)+1);
+        }
+
+        Map<String,Long> priorityCounts = new HashMap<String,Long>();
+
+        for(TaskDTO task: allTasks) {
+            String priorityStatus = task.getPriority().getPriorityStatus();
+            priorityCounts.put(priorityStatus, priorityCounts.getOrDefault(priorityStatus, 0L)+1);
+        }
+
+        
+
+
         Map<String, Object> report = Map.of(
             "totalTasks", totalTasks,
             "totalUsers", totalUsers,
             "totalAssignments", totalAssignments,
             "averageTasksPerUser", averageTaskPerUser,
-            "averageAssignmentPerTask ", averageAssignmentPerTask 
+            "averageAssignmentPerTask ", averageAssignmentPerTask ,
+            "statusCounts", statusCounts,
+            "priorityCounts", priorityCounts
 
 
         );
