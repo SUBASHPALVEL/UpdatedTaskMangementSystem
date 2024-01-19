@@ -150,14 +150,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
         if (userOptional.isPresent()) {
             String decodedOldPasswordDTO = userDTO.getOldPassword();
-            String encodedOldPasswordDTO = passwordEncoder.encode(decodedOldPasswordDTO);
             UserEntity user = userOptional.get();
             String encodedOldPasswordEntity =user.getPassword();
-            if (encodedOldPasswordDTO.equals(encodedOldPasswordEntity)){
+            if (passwordEncoder.matches(decodedOldPasswordDTO, encodedOldPasswordEntity)){
 
             String password = userDTO.getNewPassword();
             String encodedPassword = passwordEncoder.encode(password);
             user.setPassword(encodedPassword);
+            userRepository.save(user);
             return "User Password updated successfully";
 
             }
