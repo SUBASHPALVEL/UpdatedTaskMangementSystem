@@ -36,4 +36,8 @@ public class UserDTO {
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
     private String token;
+
+    private String oldPassword;
+
+    private String newPassword;
 }

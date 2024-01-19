@@ -145,9 +145,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public String changePassword (UserDTO userDTO){
+        String userName = userDTO.getUserName();
+        Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
+        if (userOptional.isPresent()) {
+            String decodedOldPasswordDTO = userDTO.getOldPassword();
+            String encodedOldPasswordDTO = passwordEncoder.encode(decodedOldPasswordDTO);
+            UserEntity user = userOptional.get();
+            String encodedOldPasswordEntity =user.getPassword();
+            if (encodedOldPasswordDTO.equals(encodedOldPasswordEntity)){
+
+            String password = userDTO.getNewPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            user.setPassword(encodedPassword);
+            return "User Password updated successfully";
+
+            }
+            else{
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode("PASSWORD_DOESN'T_MATCH");
+                errorModel.setMessage("User password didn't match.");
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
+            }
+
+        } else {
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode("USER_NOT_FOUND");
+            errorModel.setMessage("User not found");
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
+        }
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         System.out.println("In the user details service");
         return userRepository.findByUserName(username).orElseThrow(()->new UsernameNotFoundException("UserMail not found"));
     }
+
 }
