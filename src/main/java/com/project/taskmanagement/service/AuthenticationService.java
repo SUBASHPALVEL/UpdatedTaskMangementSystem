@@ -6,5 +6,5 @@ public interface AuthenticationService {
 
     String createAdminUser(UserDTO userDTO);
 
-    UserDTO loginAdminUser (String userName, String password);
+    UserDTO loginAdminUser(String userName, String password);
 }
