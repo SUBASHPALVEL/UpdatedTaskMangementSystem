@@ -20,5 +20,4 @@ public class PriorityConverter {
         priorityEntity.setPriorityStatus(priorityDTO.getPriorityStatus());
         return priorityEntity;
     }
-    
 }
