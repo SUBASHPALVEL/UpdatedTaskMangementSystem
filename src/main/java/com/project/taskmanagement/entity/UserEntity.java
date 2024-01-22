@@ -17,43 +17,38 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "user_detail")
-public class UserEntity implements UserDetails  {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    @Size(min=2, max=50,message = "User Name must be between 02 and 50 of size")
-    @Column(name = "user_name", nullable = false,unique = true)
+    @Size(min = 2, max = 50, message = "User Name must be between 02 and 50 of size")
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
-    @Size(min=2, max=150,message = "User Mail must be between 02 and 150 of size")
-    @Column(name = "user_mail", nullable = false,unique = true)
+    @Size(min = 2, max = 150, message = "User Mail must be between 02 and 150 of size")
+    @Column(name = "user_mail", nullable = false, unique = true)
     private String userMail;
 
-    @Size(min=2, max=60,message = "Password must be between 02 and 60 of size")
+    @Size(min = 2, max = 60, message = "Password must be between 02 and 60 of size")
     @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToOne
-    @JoinColumn(name="designation", nullable = false)
+    @JoinColumn(name = "designation", nullable = false)
     private RoleEntity roleId;
 
-    @Column(name="is_active", nullable = false, columnDefinition = "boolean default true")
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
-
-
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-         List<GrantedAuthority> authorities = new ArrayList<>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
         authorities.add(new SimpleGrantedAuthority("ROLE_" + getRoleId().getDesignation()));
 
@@ -62,7 +57,7 @@ public class UserEntity implements UserDetails  {
 
     @Override
     public String getUsername() {
-       return userName;
+        return userName;
     }
 
     @Override
@@ -85,26 +80,24 @@ public class UserEntity implements UserDetails  {
         return true;
     }
 
-     public UserEntity() {
-		super();
-	}
-	
+    public UserEntity() {
+        super();
+    }
 
-	public UserEntity(Long userId, String username, String password, RoleEntity roleId) {
-		super();
-		this.userId = userId;
-		this.userName = username;
-		this.password = password;
-		this.roleId = roleId;
-	}
+    public UserEntity(Long userId, String username, String password, RoleEntity roleId) {
+        super();
+        this.userId = userId;
+        this.userName = username;
+        this.password = password;
+        this.roleId = roleId;
+    }
 
     public UserEntity(Long userId, String username, String password, RoleEntity roleId, String userMail) {
-		super();
-		this.userId = userId;
-		this.userName = username;
-		this.password = password;
-		this.roleId = roleId;
+        super();
+        this.userId = userId;
+        this.userName = username;
+        this.password = password;
+        this.roleId = roleId;
         this.userMail = userMail;
     }
-	}
-    
+}
