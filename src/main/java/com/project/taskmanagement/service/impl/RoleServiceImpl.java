@@ -3,7 +3,6 @@ package com.project.taskmanagement.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +10,7 @@ import org.springframework.stereotype.Service;
 import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.RoleConverter;
-import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.RoleDTO;
-import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
@@ -30,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
     private UserRepository userRepository;
 
     @Override
-    public String createRole (RoleDTO roleDTO) {
+    public String createRole(RoleDTO roleDTO) {
         if (roleRepository.existsByDesignation(roleDTO.getDesignation())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
@@ -64,7 +61,7 @@ public class RoleServiceImpl implements RoleService {
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
-    
+
     }
 
     @Override

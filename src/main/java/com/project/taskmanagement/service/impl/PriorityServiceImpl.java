@@ -23,8 +23,7 @@ public class PriorityServiceImpl implements PriorityService {
     @Override
     public String createPriority(PriorityDTO priorityDTO) throws BusinessException {
 
-        
-        if(priorityRepository.existsByPriorityStatus(priorityDTO.getPriorityStatus())){
+        if (priorityRepository.existsByPriorityStatus(priorityDTO.getPriorityStatus())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("PRIORITY_STATUS_ALREADY_EXIST");
@@ -45,7 +44,7 @@ public class PriorityServiceImpl implements PriorityService {
 
         List<PriorityEntity> priorityEntities = priorityRepository.findAll();
         List<PriorityDTO> priorityDTOs = new ArrayList<>();
-        for (PriorityEntity priorityEntity : priorityEntities){
+        for (PriorityEntity priorityEntity : priorityEntities) {
             PriorityDTO priorityDTO = PriorityConverter.convertToDTO(priorityEntity);
             priorityDTOs.add(priorityDTO);
         }
@@ -56,7 +55,7 @@ public class PriorityServiceImpl implements PriorityService {
     @Override
     public String updatePriority(Long priorityId, PriorityDTO priorityDTO) throws BusinessException {
 
-        if(!priorityRepository.existsById(priorityId)){
+        if (!priorityRepository.existsById(priorityId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("PRIORITY_ID_FOUND");
@@ -76,7 +75,7 @@ public class PriorityServiceImpl implements PriorityService {
     @Override
     public String deletePriority(Long priorityId) throws BusinessException {
 
-        if(!priorityRepository.existsById(priorityId)){
+        if (!priorityRepository.existsById(priorityId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("PRIORITY_STATUS_NOT_FOUND");
@@ -86,6 +85,6 @@ public class PriorityServiceImpl implements PriorityService {
         }
         priorityRepository.deleteById(priorityId);
         return "Priority Status deleted successfully";
-        
+
     }
 }

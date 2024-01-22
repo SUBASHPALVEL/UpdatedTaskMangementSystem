@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +19,8 @@ import com.project.taskmanagement.exception.ErrorModel;
 import com.project.taskmanagement.service.TaskService;
 
 @Service
-public class TaskServiceImpl implements TaskService{
-    
+public class TaskServiceImpl implements TaskService {
+
     @Autowired
     private TaskRepository taskRepository;
 
@@ -30,7 +29,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public String createTask(TaskDTO taskDTO) {
-        TaskEntity taskEntity= taskConverter.convertToEntity(taskDTO);
+        TaskEntity taskEntity = taskConverter.convertToEntity(taskDTO);
         List<UserDTO> usersDTOs = taskDTO.getAssignedUsers();
         List<UserEntity> usersEntities = new ArrayList<>();
         for (UserDTO userdto : usersDTOs) {
@@ -52,7 +51,7 @@ public class TaskServiceImpl implements TaskService{
             List<UserDTO> usersDTOs = new ArrayList<>();
             for (UserEntity userEntity : usersEntities) {
                 usersDTOs.add(UserConverter.convertToDTO(userEntity));
-            } 
+            }
             taskDTO.setAssignedUsers(usersDTOs);
             return taskDTO;
         } else {
@@ -85,7 +84,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public List<TaskDTO> getTasksByUserId(Long userId) {
-        List<TaskEntity> tasks = taskRepository.findByAssignedUsers_UserIdAndIsActiveTrue(userId); 
+        List<TaskEntity> tasks = taskRepository.findByAssignedUsers_UserIdAndIsActiveTrue(userId);
         List<TaskDTO> taskDTOList = new ArrayList<>();
         for (TaskEntity task : tasks) {
             List<UserEntity> usersEntities = task.getAssignedUsers();
@@ -99,12 +98,6 @@ public class TaskServiceImpl implements TaskService{
             taskDTOList.add(taskDTO);
         }
         return taskDTOList;
-        // List<TaskDTO> taskDTOList = new ArrayList<>();
-        // for (TaskEntity task : tasks) {
-        //     TaskDTO taskDTO = taskConverter.convertToDTO(task);
-        //     taskDTOList.add(taskDTO);
-        // }
-        // return taskDTOList;
     }
 
     @Override
@@ -112,7 +105,7 @@ public class TaskServiceImpl implements TaskService{
         TaskEntity existingTaskEntity = taskRepository.findById(taskId).orElse(null);
         if (existingTaskEntity != null) {
             TaskEntity updatedTaskEntity = taskConverter.convertToEntity(taskDTO);
-            List<UserDTO> updatedAssignedUsers =taskDTO.getAssignedUsers();
+            List<UserDTO> updatedAssignedUsers = taskDTO.getAssignedUsers();
             List<UserEntity> updatedAssignedUsersEntities = new ArrayList<UserEntity>();
             for (UserDTO user : updatedAssignedUsers) {
                 UserEntity updatedUserEntity = UserConverter.convertToEntity(user);
@@ -123,8 +116,7 @@ public class TaskServiceImpl implements TaskService{
             updatedTaskEntity.setTaskId(taskId);
             taskRepository.save(updatedTaskEntity);
             return "Task updated successfully";
-        }
-        else {
+        } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("TASK_NOT_FOUND");
@@ -152,7 +144,3 @@ public class TaskServiceImpl implements TaskService{
         }
     }
 }
-
-
-
- 

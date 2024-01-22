@@ -29,7 +29,7 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService{
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private UserRepository userRepository;
@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private UserConverter userConverter;
 
     @Override
-    public String createAdminUser (UserDTO userDTO) {
+    public String createAdminUser(UserDTO userDTO) {
         Optional<UserEntity> existingUser = userRepository.findByUserName(userDTO.getUserName());
 
         if (existingUser.isPresent()) {
@@ -62,7 +62,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             } else {
                 existingUser.get().setActive(true);
 
-               
                 String password = userDTO.getPassword();
                 String encodedPassword = passwordEncoder.encode(password);
                 existingUser.get().setPassword(encodedPassword);
@@ -76,11 +75,10 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         } else {
 
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
-            
+
             String password = userDTO.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
 
-            
             newUser.setActive(true);
 
             RoleEntity adminEntity = new RoleEntity();
@@ -93,35 +91,32 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             return "User created successfully";
         }
     }
-    
+
     @Override
-    public UserDTO loginAdminUser (String userName, String password) {
+    public UserDTO loginAdminUser(String userName, String password) {
 
-
-         try{
+        try {
             Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userName, password)
-            );
+                    new UsernamePasswordAuthenticationToken(userName, password));
 
             String token = tokenService.generateJwt(auth);
 
             Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
-            if(userOptional.isPresent())
-            {
-            UserEntity userEntity = userOptional.get();
+            if (userOptional.isPresent()) {
+                UserEntity userEntity = userOptional.get();
                 UserDTO userDTO = userConverter.convertToDTO(userEntity);
                 userDTO.setToken(token);
                 return userDTO;
-            } else{
-            List<ErrorModel> errorModelList = new ArrayList<>();
-            ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
-            errorModelList.add(errorModel);
-            throw new BusinessException(errorModelList);
+            } else {
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode("USER_NOT_FOUND");
+                errorModel.setMessage("User not found");
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
             }
 
-        } catch(AuthenticationException e){
+        } catch (AuthenticationException e) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("AUTHENTICATION__ERROR");
@@ -130,5 +125,5 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             throw new BusinessException(errorModelList);
         }
     }
-    
+
 }

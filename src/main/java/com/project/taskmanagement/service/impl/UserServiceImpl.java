@@ -1,10 +1,8 @@
 package com.project.taskmanagement.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 // import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.UserDTO;
-import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
@@ -36,7 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public String createUser (UserDTO userDTO) {
+    public String createUser(UserDTO userDTO) {
         Optional<UserEntity> existingUser = userRepository.findByUserMail(userDTO.getUserMail());
 
         if (existingUser.isPresent()) {
@@ -56,11 +53,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
             newUser.setActive(true);
-            
+
             String password = userDTO.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
-
 
             userRepository.save(newUser);
             return "User created successfully";
@@ -85,7 +81,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity userEntity = userOptional.get();
             UserDTO userDTO = userConverter.convertToDTO(userEntity);
             return userDTO;
-                // Alternative for mapper and converter
+            // Alternative for mapper and converter
             // UserDTO userDTO = new UserDTO();
             // BeanUtils.copyProperties(userOptional.get(), userDTO);
 
@@ -106,13 +102,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity user = userOptional.get();
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
-
-
-            // String password = userDTO.getPassword();
-            // String encodedPassword = passwordEncoder.encode(password);
-            // user.setPassword(encodedPassword);
-
-
             user.setRoleId(userDTO.getRoleId());
             userRepository.save(user);
             return "User updated successfully";
@@ -127,7 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String deleteUser (Long userId) {
+    public String deleteUser(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
@@ -145,23 +134,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String changePassword (UserDTO userDTO){
+    public String changePassword(UserDTO userDTO) {
         String userName = userDTO.getUserName();
         Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
         if (userOptional.isPresent()) {
             String decodedOldPasswordDTO = userDTO.getOldPassword();
             UserEntity user = userOptional.get();
-            String encodedOldPasswordEntity =user.getPassword();
-            if (passwordEncoder.matches(decodedOldPasswordDTO, encodedOldPasswordEntity)){
+            String encodedOldPasswordEntity = user.getPassword();
+            if (passwordEncoder.matches(decodedOldPasswordDTO, encodedOldPasswordEntity)) {
 
-            String password = userDTO.getNewPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-            user.setPassword(encodedPassword);
-            userRepository.save(user);
-            return "User Password updated successfully";
+                String password = userDTO.getNewPassword();
+                String encodedPassword = passwordEncoder.encode(password);
+                user.setPassword(encodedPassword);
+                userRepository.save(user);
+                return "User Password updated successfully";
 
-            }
-            else{
+            } else {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
                 errorModel.setCode("PASSWORD_DOESN'T_MATCH");
@@ -184,7 +172,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         System.out.println("In the user details service");
-        return userRepository.findByUserName(username).orElseThrow(()->new UsernameNotFoundException("UserMail not found"));
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("UserMail not found"));
     }
 
 }

@@ -22,8 +22,8 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     public String createStatus(StatusDTO statusDTO) {
-        
-        if(statusRepository.existsByStatusLevel(statusDTO.getStatusLevel())){
+
+        if (statusRepository.existsByStatusLevel(statusDTO.getStatusLevel())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode("STATUS_LEVEL_ALREADY_EXIST");
@@ -43,7 +43,7 @@ public class StatusServiceImpl implements StatusService {
     public List<StatusDTO> getAllStatus() {
         List<StatusEntity> allStatusEntities = statusRepository.findAll();
         List<StatusDTO> allStatus = new ArrayList<>();
-        for(StatusEntity statusEntity : allStatusEntities){
+        for (StatusEntity statusEntity : allStatusEntities) {
             StatusDTO statusDTO = StatusConverter.convertToDTO(statusEntity);
             allStatus.add(statusDTO);
         }
@@ -67,7 +67,7 @@ public class StatusServiceImpl implements StatusService {
         statusEntity.setStatusLevel(statusDTO.getStatusLevel());
         statusRepository.save(statusEntity);
         return "Status Level updated Successfully";
-        
+
     }
 
     @Override
