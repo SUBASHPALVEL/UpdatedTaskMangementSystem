@@ -13,11 +13,11 @@ public class BusinessException extends RuntimeException {
 
     private List<ErrorModel> errors;
 
-    public BusinessException(List<ErrorModel> errors){
+    public BusinessException(List<ErrorModel> errors) {
         this.errors = errors;
     }
 
     public List<ErrorModel> getErrorList() {
         return errors;
-}
+    }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<List<ErrorModel>> handleBusinessException(BusinessException bex){
+    public ResponseEntity<List<ErrorModel>> handleBusinessException(BusinessException bex) {
         System.out.println("BusinessException Is Occurred");
         return new ResponseEntity<List<ErrorModel>>(bex.getErrors(), HttpStatus.BAD_REQUEST);
     }
