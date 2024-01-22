@@ -16,15 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.service.RoleService;
 
-
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/roles")
 public class RoleController {
-    
+
     @Autowired
     private RoleService roleService;
-
 
     @PostMapping
     public ResponseEntity<?> createRole(@RequestBody RoleDTO roleDTO) {
@@ -75,5 +73,3 @@ public class RoleController {
         }
     }
 }
-
-

@@ -19,7 +19,6 @@ import com.project.taskmanagement.dto.PriorityDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.PriorityService;
 
-
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/priorities")

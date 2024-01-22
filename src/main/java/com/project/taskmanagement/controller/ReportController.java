@@ -20,7 +20,7 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
-    
+
     @GetMapping("/task-vs-assign")
     public ResponseEntity<Map<String, Object>> getTaskVsAssignReport() {
         try {
@@ -30,5 +30,4 @@ public class ReportController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
-
 }

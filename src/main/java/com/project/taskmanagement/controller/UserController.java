@@ -20,7 +20,6 @@ import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.UserService;
 
-
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/users")
@@ -72,15 +71,13 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> changePassword(@RequestBody UserDTO userDTO) {
         try {
             String result = userService.changePassword(userDTO);
             return new ResponseEntity<>(result, HttpStatus.OK);
 
-        }catch(BusinessException bex){
+        } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-
 }

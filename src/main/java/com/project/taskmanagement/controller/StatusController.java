@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.taskmanagement.dto.StatusDTO;
 import com.project.taskmanagement.service.StatusService;
 
-
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/status")
