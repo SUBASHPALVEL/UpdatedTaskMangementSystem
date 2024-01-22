@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskDTO {
-    
+
     private Long taskId;
 
     @NotNull(message = "Task Title is mandatory")
@@ -44,6 +44,3 @@ public class TaskDTO {
     private List<UserDTO> assignedUsers;
 
 }
-
-
-

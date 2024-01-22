@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RoleDTO {
-    
+
     private Long roleId;
 
     @NotNull(message = "Designation is mandatory")
