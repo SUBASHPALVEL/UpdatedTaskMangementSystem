@@ -1,8 +1,5 @@
 package com.project.taskmanagement;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,16 +19,16 @@ public class TaskmanagementApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder encoder){
-		return args ->{
-			if(roleRepository.findByDesignation("ADMIN").isPresent()) return;
+	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder encoder) {
+		return args -> {
+			if (roleRepository.findByDesignation("ADMIN").isPresent())
+				return;
 
 			roleRepository.save(new RoleEntity(("ADMIN")));
 			roleRepository.save(new RoleEntity("USER"));
 
-
-			RoleEntity role = new RoleEntity((long) 1,"ADMIN");
-        	UserEntity admin = new UserEntity ((long)1,"suba",encoder.encode("password"),role,"S@g.com");
+			RoleEntity role = new RoleEntity((long) 1, "ADMIN");
+			UserEntity admin = new UserEntity((long) 1, "suba", encoder.encode("password"), role, "S@g.com");
 
 			userRepository.save(admin);
 		};
