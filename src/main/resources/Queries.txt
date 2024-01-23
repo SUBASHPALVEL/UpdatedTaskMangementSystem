@@ -111,3 +111,11 @@ select s.status_level, count(t.task_id)
 from status s
 left join tasks t on s.status_id= t.status_id
 group by status_level
+
+
+-- For priority breakdown
+
+select p.priority_status, count(t.task_id)
+from priority p
+left join tasks t on p.priority_id = t.priority_id
+group by priority_status
