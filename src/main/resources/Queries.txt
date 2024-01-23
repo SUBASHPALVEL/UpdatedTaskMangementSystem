@@ -119,3 +119,11 @@ select p.priority_status, count(t.task_id)
 from priority p
 left join tasks t on p.priority_id = t.priority_id
 group by priority_status
+
+
+-- For designation breakdown
+
+select r.designation, count(u.user_id)
+from roles r
+left join user_detail u on r.role_id = u.designation
+group by designation
