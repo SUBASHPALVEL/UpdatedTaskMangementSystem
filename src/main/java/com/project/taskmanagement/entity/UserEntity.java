@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class UserEntity implements UserDetails {
     private String userName;
 
     @Size(min = 2, max = 150, message = "User Mail must be between 02 and 150 of size")
+    @Email(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,3}" , message = "Invalid email address")
     @Column(name = "user_mail", nullable = false, unique = true)
     private String userMail;
 
