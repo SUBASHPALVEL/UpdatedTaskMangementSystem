@@ -85,3 +85,29 @@ JOIN tasks_users ON user_detail.user_id = tasks_users.user_id
 JOIN tasks ON tasks_users.task_id = tasks.task_id
 WHERE tasks.task_id = 1
 AND user_detail.is_active = 1 ;
+
+
+-- For Count of Users
+
+select count(user_id) from user_detail;
+
+
+-- For Count of Active Users
+
+select count(user_id) from user_detail where is_active = 1;
+
+
+-- For Count of Tasks
+
+select count(task_id) from tasks;
+
+-- For Count of Active Tasks
+
+select count(task_id) from tasks where is_active = 1;
+
+--For status breakdown
+
+select s.status_level, count(t.task_id)
+from status s
+left join tasks t on s.status_id= t.status_id
+group by status_level
