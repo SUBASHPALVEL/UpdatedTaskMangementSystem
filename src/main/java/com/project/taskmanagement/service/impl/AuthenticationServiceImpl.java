@@ -75,7 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 adminDTO.setRoleId((long) 1);
                 existingUser.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
                 userRepository.save(existingUser.get());
-                return "User is Re-registered and activated";
+                return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
             }
         } else {
 
@@ -115,8 +115,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             } else {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("USER_NOT_FOUND");
-                errorModel.setMessage("User not found");
+                errorModel.setCode(messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
             }
@@ -124,8 +124,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (AuthenticationException e) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("AUTHENTICATION__ERROR");
-            errorModel.setMessage("Authentication error");
+            errorModel.setCode(messageSource.getMessage("user.error.authentication.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }

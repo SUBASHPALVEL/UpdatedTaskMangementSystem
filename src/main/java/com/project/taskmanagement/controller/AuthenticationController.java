@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.AuthenticationService;
@@ -22,9 +21,6 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @PostMapping("/admin")
     public ResponseEntity<String> createAdminUser(@RequestBody UserDTO userDTO) {
         try {
@@ -36,8 +32,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/admin/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO body) {
-        UserDTO user = authenticationService.loginAdminUser(body.getUserName(), body.getPassword());
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<?> loginUser(@RequestBody UserDTO body) {
+        try {
+            UserDTO user = authenticationService.loginAdminUser(body.getUserName(), body.getPassword());
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+
     }
 }
