@@ -6,6 +6,8 @@ import java.util.Optional;
 
 // import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public String createUser(UserDTO userDTO) {
         Optional<UserEntity> existingUser = userRepository.findByUserMail(userDTO.getUserMail());
@@ -40,15 +45,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (existingUser.get().isActive()) {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("USER_EXISTS");
-                errorModel.setMessage("User Mail is already registered");
+                errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
 
             } else {
                 existingUser.get().setActive(true);
                 userRepository.save(existingUser.get());
-                return "User is Re-registered and activated";
+                return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
             }
         } else {
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
@@ -59,7 +65,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             newUser.setPassword(encodedPassword);
 
             userRepository.save(newUser);
-            return "User created successfully";
+            return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
         }
     }
 
@@ -88,8 +94,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -104,12 +112,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setUserMail(userDTO.getUserMail());
             user.setRoleId(userDTO.getRoleId());
             userRepository.save(user);
-            return "User updated successfully";
+            return messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -122,12 +132,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity user = userOptional.get();
             user.setActive(false);
             userRepository.save(user);
-            return "User deleted successfully";
+            return messageSource.getMessage("user.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -147,13 +159,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);
                 userRepository.save(user);
-                return "User Password updated successfully";
+                return messageSource.getMessage("user.password.updated", null, LocaleContextHolder.getLocale());
 
             } else {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("PASSWORD_DOESN'T_MATCH");
-                errorModel.setMessage("User password didn't match.");
+                errorModel.setCode(
+                        messageSource.getMessage("user.password.not_match.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.password.not_match.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
             }
@@ -161,8 +175,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -173,7 +189,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         System.out.println("In the user details service");
         return userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("UserMail not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("user.mail.not_found", null, LocaleContextHolder.getLocale())));
     }
 
 }

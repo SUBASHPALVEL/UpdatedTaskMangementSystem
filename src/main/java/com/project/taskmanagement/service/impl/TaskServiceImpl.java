@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.TaskRepository;
@@ -27,6 +29,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskConverter taskConverter;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public String createTask(TaskDTO taskDTO) {
         TaskEntity taskEntity = taskConverter.convertToEntity(taskDTO);
@@ -38,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setAssignedUsers(usersEntities);
         taskEntity.setActive(true);
         taskRepository.save(taskEntity);
-        return "Task created successfully";
+        return messageSource.getMessage("task.created", null, LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -57,8 +62,9 @@ public class TaskServiceImpl implements TaskService {
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("TASK_NOT_FOUND");
-            errorModel.setMessage("Task not found");
+            errorModel.setCode(messageSource.getMessage("task.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("task.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -115,12 +121,13 @@ public class TaskServiceImpl implements TaskService {
             updatedTaskEntity.setActive(true);
             updatedTaskEntity.setTaskId(taskId);
             taskRepository.save(updatedTaskEntity);
-            return "Task updated successfully";
+            return messageSource.getMessage("task.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("TASK_NOT_FOUND");
-            errorModel.setMessage("Task not found");
+            errorModel.setCode(messageSource.getMessage("task.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("task.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -133,12 +140,13 @@ public class TaskServiceImpl implements TaskService {
             TaskEntity task = taskOptional.get();
             task.setActive(false);
             taskRepository.save(task);
-            return "Task deleted successfully";
+            return messageSource.getMessage("task.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("TASK_NOT_FOUND");
-            errorModel.setMessage("Task not found");
+            errorModel.setCode(messageSource.getMessage("task.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("task.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }

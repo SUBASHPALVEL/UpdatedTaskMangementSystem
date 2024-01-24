@@ -60,7 +60,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
                 errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
 
@@ -115,8 +116,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             } else {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode(messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+                errorModel.setCode(
+                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
             }
@@ -124,8 +127,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (AuthenticationException e) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode(messageSource.getMessage("user.error.authentication.code", null, LocaleContextHolder.getLocale()));
-            errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null, LocaleContextHolder.getLocale()));
+            errorModel.setCode(
+                    messageSource.getMessage("user.error.authentication.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null,
+                    LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
