@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private UserConverter userConverter;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public String createAdminUser(UserDTO userDTO) {
@@ -88,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             newUser.setPassword(encodedPassword);
 
             userRepository.save(newUser);
-            return "User created successfully";
+            return messageSource.getMessage("subash", null, LocaleContextHolder.getLocale());
         }
     }
 
