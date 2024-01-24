@@ -39,7 +39,7 @@ public class RoleEntity implements GrantedAuthority {
     @Override
     public String getAuthority() {
 
-        return designation;
+        return getDesignation();
     }
 
     public RoleEntity(String designation) {
