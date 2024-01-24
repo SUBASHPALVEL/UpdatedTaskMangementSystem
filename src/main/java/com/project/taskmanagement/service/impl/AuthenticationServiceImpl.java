@@ -59,8 +59,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (existingUser.get().isActive()) {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("USER_EXISTS");
-                errorModel.setMessage("User Mail is already registered");
+                errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
 
@@ -93,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             newUser.setPassword(encodedPassword);
 
             userRepository.save(newUser);
-            return messageSource.getMessage("subash", null, LocaleContextHolder.getLocale());
+            return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
         }
     }
 
