@@ -95,9 +95,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode(
-                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -117,9 +117,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode(
-                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -137,9 +137,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode(
-                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -165,9 +165,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
                 errorModel.setCode(
-                        messageSource.getMessage("user.password.not_match.code", null, LocaleContextHolder.getLocale()));
+                        messageSource.getMessage("user.password.not_match.code", null,
+                                LocaleContextHolder.getLocale()));
                 errorModel.setMessage(
-                        messageSource.getMessage("user.password.not_match.message", null, LocaleContextHolder.getLocale()));
+                        messageSource.getMessage("user.password.not_match.message", null,
+                                LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
             }
@@ -176,9 +178,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode(
-                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -189,7 +191,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         System.out.println("In the user details service");
         return userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("user.mail.not_found", null, LocaleContextHolder.getLocale())));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        messageSource.getMessage("user.mail.not_found", null, LocaleContextHolder.getLocale())));
     }
 
 }
