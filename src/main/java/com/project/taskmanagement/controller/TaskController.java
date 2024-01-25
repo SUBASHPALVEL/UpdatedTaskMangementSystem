@@ -44,9 +44,15 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long taskId) {
-        TaskDTO task = taskService.getTaskById(taskId);
+    public ResponseEntity<?> getTaskById(@PathVariable Long taskId) {
+
+        try {
+            TaskDTO task = taskService.getTaskById(taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        
     }
 
     @GetMapping("/user/{userId}")

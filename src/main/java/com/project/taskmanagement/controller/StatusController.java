@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.taskmanagement.dto.StatusDTO;
+import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.StatusService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -28,8 +29,15 @@ public class StatusController {
 
     @PostMapping
     public ResponseEntity<String> createStatus(@RequestBody StatusDTO statusDTO) {
-        String createdStatus = statusService.createStatus(statusDTO);
-        return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
+
+        try {
+            String createdStatus = statusService.createStatus(statusDTO);
+            return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
+
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping
@@ -40,13 +48,25 @@ public class StatusController {
 
     @PutMapping("/{statusId}")
     public ResponseEntity<String> updateStatus(@PathVariable Long statusId, @RequestBody StatusDTO statusDTO) {
-        String updatedStatus = statusService.updateStatus(statusId, statusDTO);
-        return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
+
+        try {
+            String updatedStatus = statusService.updateStatus(statusId, statusDTO);
+            return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @DeleteMapping("/{statusId}")
     public ResponseEntity<String> deleteStatus(@PathVariable Long statusId) {
-        statusService.deleteStatus(statusId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        try {
+            statusService.deleteStatus(statusId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

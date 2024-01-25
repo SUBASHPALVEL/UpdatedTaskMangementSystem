@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.taskmanagement.dto.RoleDTO;
+import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.RoleService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -29,8 +30,8 @@ public class RoleController {
         try {
             roleService.createRole(roleDTO);
             return new ResponseEntity<>("Role created successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,8 +40,8 @@ public class RoleController {
         try {
             RoleDTO roleDTO = roleService.getRoleByUserId(userId);
             return new ResponseEntity<>(roleDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -48,8 +49,8 @@ public class RoleController {
     public ResponseEntity<?> getAllRoles() {
         try {
             return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -58,8 +59,8 @@ public class RoleController {
         try {
             roleService.updateRole(roleId, roleDTO);
             return new ResponseEntity<>("Role updated successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -68,8 +69,8 @@ public class RoleController {
         try {
             roleService.deleteRole(roleId);
             return new ResponseEntity<>("Role deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BusinessException e) {
+            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
