@@ -29,6 +29,9 @@ public class AuthenticationController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -37,11 +40,14 @@ public class AuthenticationController {
         try {
             UserDTO user = authenticationService.loginAdminUser(body.getUserName(), body.getPassword());
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (UsernameNotFoundException e){
+        } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }catch (BusinessException bex) {
+        } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.UNAUTHORIZED);
-        } 
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
     }
 }

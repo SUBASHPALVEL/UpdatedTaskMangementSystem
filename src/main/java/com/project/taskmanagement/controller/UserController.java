@@ -35,13 +35,22 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> getAllUsers() {
+
+        try {
+            List<UserDTO> users = userService.getAllUsers();
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @GetMapping("/{userId}")
@@ -52,6 +61,9 @@ public class UserController {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
 
     }
@@ -73,6 +85,9 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,6 +99,9 @@ public class UserController {
 
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

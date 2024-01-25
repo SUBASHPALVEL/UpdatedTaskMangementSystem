@@ -34,13 +34,22 @@ public class PriorityController {
             return new ResponseEntity<>(createdPriority, HttpStatus.CREATED);
         } catch (BusinessException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<PriorityDTO>> getAllPriorities() {
-        List<PriorityDTO> priorities = priorityService.getAllPriorities();
-        return new ResponseEntity<>(priorities, HttpStatus.OK);
+    public ResponseEntity<?> getAllPriorities() {
+
+        try {
+            List<PriorityDTO> priorities = priorityService.getAllPriorities();
+            return new ResponseEntity<>(priorities, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{priorityId}")
@@ -48,9 +57,11 @@ public class PriorityController {
         try {
             String updatedPriority = priorityService.updatePriority(priorityId, priorityDTO);
             return new ResponseEntity<>(updatedPriority, HttpStatus.OK);
-
         } catch (BusinessException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -61,6 +72,9 @@ public class PriorityController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BusinessException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

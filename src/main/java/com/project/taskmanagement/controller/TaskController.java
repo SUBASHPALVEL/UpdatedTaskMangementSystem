@@ -34,13 +34,23 @@ public class TaskController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        List<TaskDTO> tasks = taskService.getAllTasks();
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    public ResponseEntity<?> getAllTasks() {
+
+        try {
+            List<TaskDTO> tasks = taskService.getAllTasks();
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @GetMapping("/{taskId}")
@@ -48,17 +58,26 @@ public class TaskController {
 
         try {
             TaskDTO task = taskService.getTaskById(taskId);
-        return new ResponseEntity<>(task, HttpStatus.OK);
+            return new ResponseEntity<>(task, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
-        
+
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TaskDTO>> getTasksByUserId(@PathVariable Long userId) {
-        List<TaskDTO> tasks = taskService.getTasksByUserId(userId);
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    public ResponseEntity<?> getTasksByUserId(@PathVariable Long userId) {
+
+        try {
+            List<TaskDTO> tasks = taskService.getTasksByUserId(userId);
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{taskId}")
@@ -68,6 +87,9 @@ public class TaskController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,6 +100,9 @@ public class TaskController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

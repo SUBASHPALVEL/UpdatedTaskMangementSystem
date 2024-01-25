@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.ReportService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -22,12 +21,13 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping("/task-vs-assign")
-    public ResponseEntity<Map<String, Object>> getTaskVsAssignReport() {
+    public ResponseEntity<?> getTaskVsAssignReport() {
         try {
             Map<String, Object> result = reportService.getTaskVsAssignReport();
             return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 }

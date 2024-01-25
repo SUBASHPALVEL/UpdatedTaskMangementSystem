@@ -33,17 +33,25 @@ public class StatusController {
         try {
             String createdStatus = statusService.createStatus(statusDTO);
             return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
-
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
     }
 
     @GetMapping
-    public ResponseEntity<List<StatusDTO>> getAllStatus() {
-        List<StatusDTO> allStatus = statusService.getAllStatus();
-        return new ResponseEntity<>(allStatus, HttpStatus.OK);
+    public ResponseEntity<?> getAllStatus() {
+
+        try {
+            List<StatusDTO> allStatus = statusService.getAllStatus();
+            return new ResponseEntity<>(allStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{statusId}")
@@ -54,6 +62,9 @@ public class StatusController {
             return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -66,6 +77,9 @@ public class StatusController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

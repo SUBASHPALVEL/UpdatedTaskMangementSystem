@@ -32,6 +32,9 @@ public class RoleController {
             return new ResponseEntity<>("Role created successfully", HttpStatus.CREATED);
         } catch (BusinessException e) {
             return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -51,6 +54,9 @@ public class RoleController {
             return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -61,6 +67,9 @@ public class RoleController {
             return new ResponseEntity<>("Role updated successfully", HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,6 +80,9 @@ public class RoleController {
             return new ResponseEntity<>("Role deleted successfully", HttpStatus.OK);
         } catch (BusinessException e) {
             return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
