@@ -26,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "tasks")
 
-public class TaskEntity {
+public class TaskEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
