@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.taskmanagement.Repository.RoleRepository;
@@ -11,6 +12,7 @@ import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 
+@EnableJpaAuditing
 @SpringBootApplication
 public class TaskmanagementApplication {
 
