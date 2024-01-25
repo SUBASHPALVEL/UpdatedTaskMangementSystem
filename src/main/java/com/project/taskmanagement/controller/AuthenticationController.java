@@ -3,6 +3,7 @@ package com.project.taskmanagement.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +37,11 @@ public class AuthenticationController {
         try {
             UserDTO user = authenticationService.loginAdminUser(body.getUserName(), body.getPassword());
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (BusinessException bex) {
+        } catch (UsernameNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.UNAUTHORIZED);
-        }
+        } 
 
     }
 }
