@@ -36,6 +36,7 @@ CREATE TABLE user_detail (
     password VARCHAR(50) NOT NULL,
     designation BIGINT,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    CHECK (user_mail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,3}$'),
     FOREIGN KEY (designation) REFERENCES roles (role_id)
 );
 
