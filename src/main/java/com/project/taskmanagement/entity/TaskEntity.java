@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "tasks")
+
 
 public class TaskEntity extends BaseEntity {
     @Id

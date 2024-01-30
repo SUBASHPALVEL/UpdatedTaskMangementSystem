@@ -14,10 +14,16 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 @Setter
 @Getter
 @Entity
 @Table(name = "user_detail")
+@Audited
+@AuditTable(value = "users_detail_audit")
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Id
@@ -38,6 +44,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NotAudited
     @ManyToOne
     @JoinColumn(name = "designation", nullable = false)
     private RoleEntity roleId;
@@ -45,6 +52,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
+    @NotAudited
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
