@@ -106,25 +106,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     new UsernamePasswordAuthenticationToken(userName, password));
 
             String token = tokenService.generateJwt(auth);
+        }
 
-            Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
-            if (userOptional.isPresent()) {
-                UserEntity userEntity = userOptional.get();
-                UserDTO userDTO = userConverter.convertToDTO(userEntity);
-                userDTO.setToken(token);
-                return userDTO;
-            } else {
-                List<ErrorModel> errorModelList = new ArrayList<>();
-                ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode(
-                        messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
-                errorModelList.add(errorModel);
-                throw new BusinessException(errorModelList);
-            }
-
-        } catch (AuthenticationException e) {
+        catch (AuthenticationException e) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
             errorModel.setCode(
@@ -134,6 +118,45 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
+
+        Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
+        if (userOptional.isPresent()) {
+
+            try {
+                Authentication auth = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(userName, password));
+
+                String token = tokenService.generateJwt(auth);
+
+                UserEntity userEntity = userOptional.get();
+                UserDTO userDTO = userConverter.convertToDTO(userEntity);
+                userDTO.setToken(token);
+                return userDTO;
+            }
+
+            catch (AuthenticationException e) {
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode(
+                        messageSource.getMessage("user.error.authentication.code", null,
+                                LocaleContextHolder.getLocale()));
+                errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null,
+                        LocaleContextHolder.getLocale()));
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
+            }
+
+        } else {
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
+        }
+
     }
 
 }

@@ -14,7 +14,4 @@ public class AuditingConfiguration implements AuditorAware<String>  {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return Optional.ofNullable(username);
     }
-
-
-
 }
