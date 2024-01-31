@@ -42,6 +42,10 @@ public class RoleEntity extends BaseEntity implements GrantedAuthority {
         return getDesignation();
     }
 
+    public void setAuthority(String authority){
+        this.designation = authority;
+    }
+
     public RoleEntity(String designation) {
         this.designation = designation;
     }

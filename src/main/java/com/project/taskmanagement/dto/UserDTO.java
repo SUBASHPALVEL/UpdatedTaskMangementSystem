@@ -2,6 +2,7 @@ package com.project.taskmanagement.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.TaskEntity;
@@ -33,7 +34,7 @@ public class UserDTO {
     @NotNull(message = "Is Active is mandatory")
     private boolean isActive;
 
-    private List<TaskEntity> assignedTasks = new ArrayList<>();
+    private List<TaskDTO> assignedTasks = new ArrayList<>();
 
     private String token;
 
@@ -41,4 +42,5 @@ public class UserDTO {
 
     private String newPassword;
     
+    private Set<RoleEntity> authorities;
 }

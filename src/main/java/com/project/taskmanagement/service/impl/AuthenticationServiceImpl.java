@@ -1,8 +1,10 @@
 package com.project.taskmanagement.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.UserRepository;
+import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.converter.RoleConverter;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.RoleDTO;
@@ -32,6 +35,9 @@ import jakarta.transaction.Transactional;
 @Transactional
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -93,6 +99,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             newUser.setPassword(encodedPassword);
 
+
+
+
+
+    
+
+
+
+            
+            System.out.println("--------------------------------------------------------");
+            
+            System.out.println("--------------------------------------------------------");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             userRepository.save(newUser);
             return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
         }
@@ -101,23 +138,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserDTO loginAdminUser(String userName, String password) {
 
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userName, password));
-
-            String token = tokenService.generateJwt(auth);
-        }
-
-        catch (AuthenticationException e) {
-            List<ErrorModel> errorModelList = new ArrayList<>();
-            ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode(
-                    messageSource.getMessage("user.error.authentication.code", null, LocaleContextHolder.getLocale()));
-            errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null,
-                    LocaleContextHolder.getLocale()));
-            errorModelList.add(errorModel);
-            throw new BusinessException(errorModelList);
-        }
 
         Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
         if (userOptional.isPresent()) {
@@ -130,6 +150,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                 UserEntity userEntity = userOptional.get();
                 UserDTO userDTO = userConverter.convertToDTO(userEntity);
+
+
+
+                RoleEntity userRole = roleRepository.findByDesignation("ADMIN").get();
+
+                Set<RoleEntity> authorities = new HashSet<>();
+
+                authorities.add(userRole);
+
+                userDTO.setAuthorities(authorities);
+
+
+
+
+
+
+
+
+
+
+
+
+
                 userDTO.setToken(token);
                 return userDTO;
             }
