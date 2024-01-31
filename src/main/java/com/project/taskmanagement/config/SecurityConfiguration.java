@@ -3,6 +3,7 @@ package com.project.taskmanagement.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -54,6 +55,13 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/api/report/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET,"/api/tasks/user/**").permitAll();
+                    
+                    auth.requestMatchers(HttpMethod.POST,"/api/tasks").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE,"/api/tasks").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET,"/api/tasks").hasRole("ADMIN");
+                    
                     auth.requestMatchers("/api/users/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 });
