@@ -60,7 +60,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + getRoleId().getDesignation()));
+        authorities.add(new SimpleGrantedAuthority(getRoleId().getDesignation()));
 
         return authorities;
     }
