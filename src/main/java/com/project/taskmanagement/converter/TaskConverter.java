@@ -26,10 +26,9 @@ public class TaskConverter {
         PriorityDTO priorityDTO = PriorityConverter.convertToDTO(taskEntity.getPriority());
         taskDTO.setPriority(priorityDTO);
 
-        taskDTO.setCreatedDate(taskEntity.getCreatedDate());
-        taskDTO.setDueDate(taskEntity.getDueDate());
-        taskDTO.setCompletedDate(taskEntity.getCompletedDate());
-        taskDTO.setModifiedDate(taskEntity.getModifiedDate());
+        
+
+        
         return taskDTO;
     }
 

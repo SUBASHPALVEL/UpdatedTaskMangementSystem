@@ -1,6 +1,6 @@
 package com.project.taskmanagement.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -31,13 +31,9 @@ public class TaskDTO {
 
     @NotNull(message = "Task Due Date is mandatory")
     @NotEmpty(message = "Task Due Date cannot be empty")
-    private LocalDate dueDate;
+    private LocalDateTime dueAt;
 
-    private LocalDate createdDate;
-
-    private LocalDate completedDate;
-
-    private LocalDate modifiedDate;
+    private LocalDateTime completedAt;
 
     private List<UserDTO> assignedUsers;
 

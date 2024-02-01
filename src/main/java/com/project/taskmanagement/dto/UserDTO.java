@@ -16,6 +16,10 @@ import lombok.Setter;
 public class UserDTO {
     private Long userId;
 
+    @NotNull(message = "Name is mandatory")
+    @NotEmpty(message = "Name cannot be empty")
+    private String name;
+
     @NotNull(message = "User Name is mandatory")
     @NotEmpty(message = "User Name cannot be empty")
     private String userName;
