@@ -33,7 +33,7 @@ CREATE TABLE user_detail (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_name VARCHAR(50) NOT NULL UNIQUE,
     user_mail VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(60) NOT NULL,
     designation BIGINT,
     is_active BOOLEAN NOT NULL DEFAULT true,
     CHECK (user_mail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,3}$'),
@@ -58,6 +58,12 @@ CREATE TABLE `user_detail_audit` (
   `user_mail` varchar(150) DEFAULT NULL,
   `user_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`rev`,`user_id`)
+);
+
+CREATE TABLE revinfo (
+  rev INT NOT NULL AUTO_INCREMENT,
+  revtstmp BIGINT NOT NULL,
+  PRIMARY KEY (rev)
 );
 
 
