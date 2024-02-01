@@ -31,6 +31,7 @@ CREATE TABLE tasks (
 
 CREATE TABLE user_detail (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100) NOT NULL,
     user_name VARCHAR(50) NOT NULL UNIQUE,
     user_mail VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(60) NOT NULL,
@@ -49,15 +50,16 @@ CREATE TABLE users_tasks (
     FOREIGN KEY (user_id) REFERENCES user_detail (user_id)
 );
 
-CREATE TABLE `user_detail_audit` (
-  `user_id` bigint NOT NULL,
-  `rev` bigint NOT NULL,
-  `revtype` tinyint DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT '1',
-  `password` varchar(60) DEFAULT NULL,
-  `user_mail` varchar(150) DEFAULT NULL,
-  `user_name` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`rev`,`user_id`)
+CREATE TABLE user_detail_audit (
+    rev bigint NOT NULL,
+    user_id bigint NOT NULL,
+    name varchar(100) NOT NULL,
+    revtype tinyint DEFAULT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    password varchar(60) DEFAULT NULL,
+    user_mail varchar(150) DEFAULT NULL,
+    user_name varchar(50) DEFAULT NULL,
+    PRIMARY KEY (`rev`,`user_id`)
 );
 
 CREATE TABLE revinfo (
