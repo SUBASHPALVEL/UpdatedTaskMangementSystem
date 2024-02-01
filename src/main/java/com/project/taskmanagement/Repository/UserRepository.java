@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity,Long> {
-    
+public interface UserRepository extends JpaRepository<UserEntity, Long> ,RevisionRepository<UserEntity, Long, Long>{
+
     Optional<UserEntity> findByUserMail(String userMail);
 
     List<UserEntity> findByIsActiveTrue();
+
+    Optional<UserEntity> findByUserName(String userName);
 }

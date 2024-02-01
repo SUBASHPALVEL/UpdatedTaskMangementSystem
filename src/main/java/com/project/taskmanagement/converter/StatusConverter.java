@@ -14,7 +14,7 @@ public class StatusConverter {
         return statusDTO;
     }
 
-    public static StatusEntity convertToEntity(StatusDTO statusDTO){
+    public static StatusEntity convertToEntity(StatusDTO statusDTO) {
         StatusEntity statusEntity = new StatusEntity();
         statusEntity.setStatusId(statusDTO.getStatusId());
         statusEntity.setStatusLevel(statusDTO.getStatusLevel());

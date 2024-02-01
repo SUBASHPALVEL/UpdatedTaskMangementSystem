@@ -14,4 +14,3 @@ public interface StatusService {
 
     String deleteStatus(Long statusId);
 }
-

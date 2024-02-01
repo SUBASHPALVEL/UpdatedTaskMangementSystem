@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.UserService;
 
-
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -34,19 +35,37 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping()
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> getAllUsers() {
+
+        try {
+            List<UserDTO> users = userService.getAllUsers();
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
-        UserDTO user = userService.getUserById(userId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
+
+        try {
+            UserDTO user = userService.getUserById(userId);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @PutMapping("/{userId}")
@@ -66,21 +85,23 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-     @PostMapping("/admin")
-    public ResponseEntity<String> createAdminUser(@RequestBody UserDTO userDTO) {
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody UserDTO userDTO) {
         try {
-            String result = userService.createAdminUser(userDTO);
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            String result = userService.changePassword(userDTO);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
         } catch (BusinessException bex) {
             return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PostMapping("/admin/login")
-    public String loginUser(@RequestBody UserDTO body){
-        return userService.loginAdminUser(body.getUserMail(), body.getPassword());
     }
 }

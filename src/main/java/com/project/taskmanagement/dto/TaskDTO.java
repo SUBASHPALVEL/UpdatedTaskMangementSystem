@@ -3,8 +3,6 @@ package com.project.taskmanagement.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.project.taskmanagement.entity.PriorityEntity;
-import com.project.taskmanagement.entity.StatusEntity;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskDTO {
-    
+
     private Long taskId;
 
     @NotNull(message = "Task Title is mandatory")
@@ -25,11 +23,11 @@ public class TaskDTO {
 
     @NotNull(message = "Task Status is mandatory")
     @NotEmpty(message = "Task Status cannot be empty")
-    private StatusEntity status;
+    private StatusDTO status;
 
     @NotNull(message = "Task Priority is mandatory")
     @NotEmpty(message = "Task Priority cannot be empty")
-    private PriorityEntity priority;
+    private PriorityDTO priority;
 
     @NotNull(message = "Task Due Date is mandatory")
     @NotEmpty(message = "Task Due Date cannot be empty")
@@ -44,6 +42,3 @@ public class TaskDTO {
     private List<UserDTO> assignedUsers;
 
 }
-
-
-

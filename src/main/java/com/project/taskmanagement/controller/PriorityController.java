@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.project.taskmanagement.dto.PriorityDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.PriorityService;
 
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/priorities")
 public class PriorityController {
@@ -32,13 +34,22 @@ public class PriorityController {
             return new ResponseEntity<>(createdPriority, HttpStatus.CREATED);
         } catch (BusinessException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<PriorityDTO>> getAllPriorities() {
-        List<PriorityDTO> priorities = priorityService.getAllPriorities();
-        return new ResponseEntity<>(priorities, HttpStatus.OK);
+    public ResponseEntity<?> getAllPriorities() {
+
+        try {
+            List<PriorityDTO> priorities = priorityService.getAllPriorities();
+            return new ResponseEntity<>(priorities, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{priorityId}")
@@ -46,9 +57,11 @@ public class PriorityController {
         try {
             String updatedPriority = priorityService.updatePriority(priorityId, priorityDTO);
             return new ResponseEntity<>(updatedPriority, HttpStatus.OK);
-
         } catch (BusinessException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -59,6 +72,9 @@ public class PriorityController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BusinessException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

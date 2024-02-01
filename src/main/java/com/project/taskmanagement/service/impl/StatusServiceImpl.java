@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.StatusRepository;
@@ -20,14 +22,19 @@ public class StatusServiceImpl implements StatusService {
     @Autowired
     private StatusRepository statusRepository;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public String createStatus(StatusDTO statusDTO) {
-        
-        if(statusRepository.existsByStatusLevel(statusDTO.getStatusLevel())){
+
+        if (statusRepository.existsByStatusLevel(statusDTO.getStatusLevel())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("STATUS_LEVEL_ALREADY_EXIST");
-            errorModel.setMessage("Status Level already exists");
+            errorModel.setCode(
+                    messageSource.getMessage("status.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(messageSource.getMessage("status.exists.message", null,
+                    LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -35,7 +42,7 @@ public class StatusServiceImpl implements StatusService {
         StatusEntity statusEntity = new StatusEntity();
         statusEntity.setStatusLevel(statusDTO.getStatusLevel());
         statusRepository.save(statusEntity);
-        return "Status level created successfully";
+        return messageSource.getMessage("status.created", null, LocaleContextHolder.getLocale());
 
     }
 
@@ -43,7 +50,7 @@ public class StatusServiceImpl implements StatusService {
     public List<StatusDTO> getAllStatus() {
         List<StatusEntity> allStatusEntities = statusRepository.findAll();
         List<StatusDTO> allStatus = new ArrayList<>();
-        for(StatusEntity statusEntity : allStatusEntities){
+        for (StatusEntity statusEntity : allStatusEntities) {
             StatusDTO statusDTO = StatusConverter.convertToDTO(statusEntity);
             allStatus.add(statusDTO);
         }
@@ -56,8 +63,10 @@ public class StatusServiceImpl implements StatusService {
         if (!statusRepository.existsById(statusId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("STATUS_ID_FOUND");
-            errorModel.setMessage("Status ID not found");
+            errorModel.setCode(
+                    messageSource.getMessage("status.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(messageSource.getMessage("status.not_found.message", null,
+                    LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -66,8 +75,8 @@ public class StatusServiceImpl implements StatusService {
         statusEntity.setStatusId(statusId);
         statusEntity.setStatusLevel(statusDTO.getStatusLevel());
         statusRepository.save(statusEntity);
-        return "Status Level updated Successfully";
-        
+        return messageSource.getMessage("status.updated", null, LocaleContextHolder.getLocale());
+
     }
 
     @Override
@@ -77,13 +86,15 @@ public class StatusServiceImpl implements StatusService {
 
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("STATUS_NOT_FOUND");
-            errorModel.setMessage("Status ID not found");
+            errorModel.setCode(
+                    messageSource.getMessage("status.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(messageSource.getMessage("status.not_found.message", null,
+                    LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
 
         statusRepository.deleteById(statusId);
-        return "Status deleted successfully";
+        return messageSource.getMessage("status.deleted", null, LocaleContextHolder.getLocale());
     }
 }

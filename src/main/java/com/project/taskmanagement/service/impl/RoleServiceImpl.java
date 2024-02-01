@@ -3,17 +3,16 @@ package com.project.taskmanagement.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.RoleConverter;
-import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.RoleDTO;
-import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
@@ -29,13 +28,18 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
-    public String createRole (RoleDTO roleDTO) {
+    public String createRole(RoleDTO roleDTO) {
         if (roleRepository.existsByDesignation(roleDTO.getDesignation())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("DESIGNATION_ALREADY_EXIST");
-            errorModel.setMessage("Role with designation already exists");
+            errorModel.setCode(
+                    messageSource.getMessage("role.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("role.exists.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -43,7 +47,7 @@ public class RoleServiceImpl implements RoleService {
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setDesignation(roleDTO.getDesignation());
         roleRepository.save(roleEntity);
-        return "Role created successfully";
+        return messageSource.getMessage("role.created", null, LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -59,12 +63,13 @@ public class RoleServiceImpl implements RoleService {
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
-    
+
     }
 
     @Override
@@ -86,8 +91,9 @@ public class RoleServiceImpl implements RoleService {
         if (optionalRoleEntity.isEmpty()) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("ROLE_NOT_FOUND");
-            errorModel.setMessage("Role not found");
+            errorModel.setCode(messageSource.getMessage("role.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("role.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -95,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
         RoleEntity roleEntity = optionalRoleEntity.get();
         roleEntity.setDesignation(roleDTO.getDesignation());
         roleRepository.save(roleEntity);
-        return "Role is updated successfully";
+        return messageSource.getMessage("role.updated", null, LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -103,13 +109,14 @@ public class RoleServiceImpl implements RoleService {
         if (!roleRepository.existsById(roleId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("ROLE_NOT_FOUND");
-            errorModel.setMessage("Role not found");
+            errorModel.setCode(messageSource.getMessage("role.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("role.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
 
         roleRepository.deleteById(roleId);
-        return "Role deleted";
+        return messageSource.getMessage("role.deleted", null, LocaleContextHolder.getLocale());
     }
 }

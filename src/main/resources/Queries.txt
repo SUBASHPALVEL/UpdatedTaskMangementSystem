@@ -36,6 +36,7 @@ CREATE TABLE user_detail (
     password VARCHAR(50) NOT NULL,
     designation BIGINT,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    CHECK (user_mail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,3}$'),
     FOREIGN KEY (designation) REFERENCES roles (role_id)
 );
 
@@ -49,13 +50,14 @@ CREATE TABLE tasks_users (
 );
 
 
---For Assigned tasks
+--For Assigned Tasks
 
 SELECT *
 FROM tasks
 JOIN tasks_users ON tasks.task_id = tasks_users.task_id
 JOIN user_detail ON tasks_users.user_id = user_detail.user_id
 WHERE user_detail.user_id = 1;
+
 
 --For Assigned Users
 
@@ -66,49 +68,63 @@ JOIN tasks ON tasks_users.task_id = tasks.task_id
 WHERE tasks.task_id = 1;
 
 
+-- For Assigned Active Tasks
+
+SELECT *
+FROM tasks
+JOIN tasks_users ON tasks.task_id = tasks_users.task_id
+JOIN user_detail ON tasks_users.user_id = user_detail.user_id
+WHERE user_detail.user_id = 1
+AND tasks.is_active = 1;
 
 
+-- For Assigned Active Tasks
+
+SELECT *
+FROM user_detail
+JOIN tasks_users ON user_detail.user_id = tasks_users.user_id
+JOIN tasks ON tasks_users.task_id = tasks.task_id
+WHERE tasks.task_id = 1
+AND user_detail.is_active = 1 ;
 
 
- @Override
-    public String getAuthority() {
-       return roleId.getDesignation();
-    }
+-- For Count of Users
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(roleId.getDesignation()));
-    }
+select count(user_id) from user_detail;
 
-    @Override
-    public String getUsername() {
-        return this.userMail;
-    }
 
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
+-- For Count of Active Users
 
-    
+select count(user_id) from user_detail where is_active = 1;
 
-    @Override
-    public boolean isAccountNonExpired() {
-      
-        return true;
-    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-       return true;
-    }
+-- For Count of Tasks
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-       return true;
-    }
+select count(task_id) from tasks;
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+-- For Count of Active Tasks
+
+select count(task_id) from tasks where is_active = 1;
+
+--For status breakdown
+
+select s.status_level, count(t.task_id)
+from status s
+left join tasks t on s.status_id= t.status_id
+group by status_level
+
+
+-- For priority breakdown
+
+select p.priority_status, count(t.task_id)
+from priority p
+left join tasks t on p.priority_id = t.priority_id
+group by priority_status
+
+
+-- For designation breakdown
+
+select r.designation, count(u.user_id)
+from roles r
+left join user_detail u on r.role_id = u.designation
+group by designation

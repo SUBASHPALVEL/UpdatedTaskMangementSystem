@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.Repository.PriorityRepository;
@@ -20,15 +22,18 @@ public class PriorityServiceImpl implements PriorityService {
     @Autowired
     private PriorityRepository priorityRepository;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public String createPriority(PriorityDTO priorityDTO) throws BusinessException {
 
-        
-        if(priorityRepository.existsByPriorityStatus(priorityDTO.getPriorityStatus())){
+        if (priorityRepository.existsByPriorityStatus(priorityDTO.getPriorityStatus())) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("PRIORITY_STATUS_ALREADY_EXIST");
-            errorModel.setMessage("Priority Status already exists");
+            errorModel.setCode(messageSource.getMessage("priority.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("priority.exists.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -36,7 +41,7 @@ public class PriorityServiceImpl implements PriorityService {
         priorityEntity.setPriorityId(priorityDTO.getPriorityId());
         priorityEntity.setPriorityStatus(priorityDTO.getPriorityStatus());
         priorityRepository.save(priorityEntity);
-        return "Priority Status created successfully";
+        return messageSource.getMessage("priority.created", null, LocaleContextHolder.getLocale());
 
     }
 
@@ -45,7 +50,7 @@ public class PriorityServiceImpl implements PriorityService {
 
         List<PriorityEntity> priorityEntities = priorityRepository.findAll();
         List<PriorityDTO> priorityDTOs = new ArrayList<>();
-        for (PriorityEntity priorityEntity : priorityEntities){
+        for (PriorityEntity priorityEntity : priorityEntities) {
             PriorityDTO priorityDTO = PriorityConverter.convertToDTO(priorityEntity);
             priorityDTOs.add(priorityDTO);
         }
@@ -56,11 +61,13 @@ public class PriorityServiceImpl implements PriorityService {
     @Override
     public String updatePriority(Long priorityId, PriorityDTO priorityDTO) throws BusinessException {
 
-        if(!priorityRepository.existsById(priorityId)){
+        if (!priorityRepository.existsById(priorityId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("PRIORITY_ID_FOUND");
-            errorModel.setMessage("Priority ID not found");
+            errorModel.setCode(
+                    messageSource.getMessage("priority.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("priority.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -69,23 +76,25 @@ public class PriorityServiceImpl implements PriorityService {
         priorityEntity.setPriorityId(priorityId);
         priorityEntity.setPriorityStatus(priorityDTO.getPriorityStatus());
         priorityRepository.save(priorityEntity);
-        return "Priority Status updated Successfully";
+        return messageSource.getMessage("priority.updated", null, LocaleContextHolder.getLocale());
 
     }
 
     @Override
     public String deletePriority(Long priorityId) throws BusinessException {
 
-        if(!priorityRepository.existsById(priorityId)){
+        if (!priorityRepository.existsById(priorityId)) {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("PRIORITY_STATUS_NOT_FOUND");
-            errorModel.setMessage("Priority ID not found");
+            errorModel.setCode(
+                    messageSource.getMessage("priority.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("priority.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
         priorityRepository.deleteById(priorityId);
-        return "Priority Status deleted successfully";
-        
+        return messageSource.getMessage("priority.deleted", null, LocaleContextHolder.getLocale());
+
     }
 }

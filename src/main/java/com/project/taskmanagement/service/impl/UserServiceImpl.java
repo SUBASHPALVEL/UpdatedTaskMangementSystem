@@ -6,31 +6,24 @@ import java.util.Optional;
 
 // import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
-import com.project.taskmanagement.converter.RoleConverter;
 import com.project.taskmanagement.converter.UserConverter;
-import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.dto.UserDTO;
-import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.service.TokenService;
 import com.project.taskmanagement.service.UserService;
 
-
 @Service
-@Transactional
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -39,16 +32,10 @@ public class UserServiceImpl implements UserService{
     private UserConverter userConverter;
 
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private MessageSource messageSource;
 
     @Override
     public String createUser(UserDTO userDTO) {
@@ -58,21 +45,27 @@ public class UserServiceImpl implements UserService{
             if (existingUser.get().isActive()) {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("USER_EXISTS");
-                errorModel.setMessage("User Mail is already registered");
+                errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
                 errorModelList.add(errorModel);
                 throw new BusinessException(errorModelList);
 
             } else {
                 existingUser.get().setActive(true);
                 userRepository.save(existingUser.get());
-                return "User is Re-registered and activated";
+                return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
             }
         } else {
             UserEntity newUser = UserConverter.convertToEntity(userDTO);
             newUser.setActive(true);
+
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            newUser.setPassword(encodedPassword);
+
             userRepository.save(newUser);
-            return "User created successfully";
+            return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
         }
     }
 
@@ -81,8 +74,6 @@ public class UserServiceImpl implements UserService{
         List<UserEntity> users = userRepository.findByIsActiveTrue();
         List<UserDTO> userDTOList = new ArrayList<>();
         for (UserEntity user : users) {
-            //
-            //
             UserDTO userDTO = UserConverter.convertToDTO(user);
             userDTOList.add(userDTO);
         }
@@ -96,15 +87,17 @@ public class UserServiceImpl implements UserService{
             UserEntity userEntity = userOptional.get();
             UserDTO userDTO = userConverter.convertToDTO(userEntity);
             return userDTO;
-                // Alternative for mapper and converter
+            // Alternative for mapper and converter
             // UserDTO userDTO = new UserDTO();
             // BeanUtils.copyProperties(userOptional.get(), userDTO);
 
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -117,15 +110,16 @@ public class UserServiceImpl implements UserService{
             UserEntity user = userOptional.get();
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
-            user.setPassword(userDTO.getPassword());
             user.setRoleId(userDTO.getRoleId());
             userRepository.save(user);
-            return "User updated successfully";
+            return messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
@@ -138,75 +132,67 @@ public class UserServiceImpl implements UserService{
             UserEntity user = userOptional.get();
             user.setActive(false);
             userRepository.save(user);
-            return "User deleted successfully";
+            return messageSource.getMessage("user.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.setCode("USER_NOT_FOUND");
-            errorModel.setMessage("User not found");
+            errorModel.setCode(
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
     }
 
     @Override
-    public String createAdminUser(UserDTO userDTO) {
-        Optional<UserEntity> existingUser = userRepository.findByUserMail(userDTO.getUserMail());
+    public String changePassword(UserDTO userDTO) {
+        String userName = userDTO.getUserName();
+        Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
+        if (userOptional.isPresent()) {
+            String decodedOldPasswordDTO = userDTO.getOldPassword();
+            UserEntity user = userOptional.get();
+            String encodedOldPasswordEntity = user.getPassword();
+            if (passwordEncoder.matches(decodedOldPasswordDTO, encodedOldPasswordEntity)) {
 
-        if (existingUser.isPresent()) {
-            if (existingUser.get().isActive()) {
-                List<ErrorModel> errorModelList = new ArrayList<>();
-                ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode("USER_EXISTS");
-                errorModel.setMessage("User Mail is already registered");
-                errorModelList.add(errorModel);
-                throw new BusinessException(errorModelList);
+                String password = userDTO.getNewPassword();
+                String encodedPassword = passwordEncoder.encode(password);
+                user.setPassword(encodedPassword);
+                userRepository.save(user);
+                return messageSource.getMessage("user.password.updated", null, LocaleContextHolder.getLocale());
 
             } else {
-                existingUser.get().setActive(true);
-                RoleDTO adminDTO = new RoleDTO();
-                adminDTO.setRoleId((long) 1);
-                existingUser.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
-                userRepository.save(existingUser.get());
-                return "User is Re-registered and activated";
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode(
+                        messageSource.getMessage("user.password.not_match.code", null,
+                                LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.password.not_match.message", null,
+                                LocaleContextHolder.getLocale()));
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
             }
+
         } else {
-
-            UserEntity newUser = UserConverter.convertToEntity(userDTO);
-            
-            String password = userDTO.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-
-            
-            newUser.setActive(true);
-
-            RoleEntity adminEntity = new RoleEntity();
-            adminEntity.setRoleId((long) 1);
-            newUser.setRoleId(adminEntity);
-
-            newUser.setPassword(encodedPassword);
-
-            userRepository.save(newUser);
-            return "User created successfully";
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.not_found.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.not_found.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
     }
-    
+
     @Override
-    public String loginAdminUser (String userMail, String password){
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-
-         try{
-            Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userMail, password)
-            );
-
-            String token = tokenService.generateJwt(auth);
-
-            return token;
-
-        } catch(AuthenticationException e){
-            return "Authentication error: " + e.getMessage();
-        }
-
+        System.out.println("In the user details service");
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        messageSource.getMessage("user.mail.not_found", null, LocaleContextHolder.getLocale())));
     }
+
 }

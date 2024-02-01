@@ -14,20 +14,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="priority")
-public class PriorityEntity {
-    
+@Table(name = "priority")
+public class PriorityEntity extends BaseEntity {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="priority_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "priority_id")
     private Long priorityId;
 
     @NotNull
-    @Size(min=2, max=50,message = "Priority must be between 02 and 50 of size")
-    @Column(name="priority_status", nullable = false, unique = true)
+    @Size(min = 2, max = 50, message = "Priority must be between 02 and 50 of size")
+    @Column(name = "priority_status", nullable = false, unique = true)
     private String priorityStatus;
 
 }
-
-
-

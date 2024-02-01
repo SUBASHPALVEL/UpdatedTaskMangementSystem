@@ -1,7 +1,11 @@
 package com.project.taskmanagement.entity;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,13 +29,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "tasks")
 
-public class TaskEntity {
+
+public class TaskEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Long taskId;
 
-    @Size(min=2, max=100,message = "Title must be between 02 and 150 of size")
+    @Size(min = 2, max = 100, message = "Title must be between 02 and 150 of size")
     @Column(name = "title", nullable = false)
     @NotNull
     private String title;
@@ -40,7 +45,7 @@ public class TaskEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "status_id") 
+    @JoinColumn(name = "status_id")
     private StatusEntity status;
 
     @ManyToOne
@@ -63,14 +68,11 @@ public class TaskEntity {
     @Temporal(TemporalType.DATE)
     private LocalDate modifiedDate;
 
-    @Column(name="is_active", nullable = false,columnDefinition = "boolean default true")
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @JoinTable(name="tasks_users",
-                    joinColumns = @JoinColumn(name="taskId"),
-                    inverseJoinColumns = @JoinColumn(name="userId")
-    )
+    @JoinTable(name = "tasks_users", joinColumns = @JoinColumn(name = "taskId"), inverseJoinColumns = @JoinColumn(name = "userId"))
     @ManyToMany
     private List<UserEntity> assignedUsers = new ArrayList<>();
-    
+
 }

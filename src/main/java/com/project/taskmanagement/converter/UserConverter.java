@@ -7,19 +7,19 @@ import com.project.taskmanagement.entity.UserEntity;
 
 @Component
 public class UserConverter {
-    
-    public static UserDTO convertToDTO(UserEntity userEntity) {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setUserId(userEntity.getUserId());
-    userDTO.setUserName(userEntity.getUserName());
-    userDTO.setUserMail(userEntity.getUserMail());
-    userDTO.setPassword(userEntity.getPassword());
-    userDTO.setRoleId(userEntity.getRoleId());
-    userDTO.setActive(userEntity.isActive());
-    return userDTO;
-}
 
-    public static UserEntity convertToEntity(UserDTO userDTO){
+    public static UserDTO convertToDTO(UserEntity userEntity) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(userEntity.getUserId());
+        userDTO.setUserName(userEntity.getUsername());
+        userDTO.setUserMail(userEntity.getUserMail());
+        userDTO.setPassword(userEntity.getPassword());
+        userDTO.setRoleId(userEntity.getRoleId());
+        userDTO.setActive(userEntity.isActive());
+        return userDTO;
+    }
+
+    public static UserEntity convertToEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(userDTO.getUserId());
         userEntity.setUserName(userDTO.getUserName());
@@ -28,7 +28,5 @@ public class UserConverter {
         userEntity.setRoleId(userDTO.getRoleId());
         userEntity.setActive(userDTO.isActive());
         return userEntity;
-
     }
-
 }
