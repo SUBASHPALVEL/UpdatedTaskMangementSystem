@@ -4,9 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +27,7 @@ import lombok.Setter;
 @Table(name = "tasks")
 
 
-public class TaskEntity extends BaseEntity {
+public class TaskEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
@@ -71,7 +68,7 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @JoinTable(name = "tasks_users", joinColumns = @JoinColumn(name = "taskId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+    @JoinTable(name = "users_tasks", joinColumns = @JoinColumn(name = "taskId"), inverseJoinColumns = @JoinColumn(name = "userId"))
     @ManyToMany
     private List<UserEntity> assignedUsers = new ArrayList<>();
 
