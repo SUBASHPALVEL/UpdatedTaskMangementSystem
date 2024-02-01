@@ -1,8 +1,15 @@
 package com.project.taskmanagement.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,21 +56,31 @@ public class TaskEntity {
     @JoinColumn(name = "priority_id")
     private PriorityEntity priority;
 
-    @Column(name = "due_Date")
-    @Temporal(TemporalType.DATE)
-    private LocalDate dueDate;
+    @NotAudited
+    @CreatedBy
+    @Column(name = "created_by", updatable = false )
+    private Long createdBy;
 
-    @Column(name = "created_Date")
-    @Temporal(TemporalType.DATE)
-    private LocalDate createdDate;
+    @NotAudited
+    @CreatedDate
+    @Column(name = "created_at" , updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "completed_Date")
-    @Temporal(TemporalType.DATE)
-    private LocalDate completedDate;
+    @LastModifiedBy
+    @Column(name = "last_modified_by" , insertable = false)
+    private Long lastModifiedBy;
 
-    @Column(name = "modified_Date")
-    @Temporal(TemporalType.DATE)
-    private LocalDate modifiedDate;
+    @LastModifiedDate
+    @Column(name = "last_modified_at" , insertable = false)
+    private LocalDateTime lastModifiedAt;
+
+    @Column(name = "due_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dueAt;
+
+    @Column(name = "completed_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime completedAt;
 
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;

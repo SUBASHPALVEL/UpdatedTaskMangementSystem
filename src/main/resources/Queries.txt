@@ -20,10 +20,12 @@ CREATE TABLE tasks (
     description TEXT,
     status_id BIGINT,
     priority_id BIGINT,
-    due_Date DATE,
-    created_Date DATE,
-    completed_Date DATE,
-    modified_Date DATE,
+    created_by BIGINT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_by BIGINT DEFAULT NULL,
+    last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    due_at TIMESTAMP NOT NULL,
+    completed_at TIMESTAMP,
     is_active BOOLEAN NOT NULL DEFAULT true,
     FOREIGN KEY (status_id) REFERENCES status (status_id),
     FOREIGN KEY (priority_id) REFERENCES priority (priority_id)
@@ -37,6 +39,10 @@ CREATE TABLE user_detail (
     password VARCHAR(60) NOT NULL,
     designation BIGINT,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    created_by BIGINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_by BIGINT DEFAULT NULL,
+    last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CHECK (user_mail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,3}$'),
     FOREIGN KEY (designation) REFERENCES roles (role_id)
 );
@@ -59,6 +65,8 @@ CREATE TABLE user_detail_audit (
     password varchar(60) DEFAULT NULL,
     user_mail varchar(150) DEFAULT NULL,
     user_name varchar(50) DEFAULT NULL,
+    last_modified_by BIGINT DEFAULT NULL,
+    last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`rev`,`user_id`)
 );
 
