@@ -41,12 +41,23 @@ CREATE TABLE user_detail (
 );
 
 
-CREATE TABLE tasks_users (
+CREATE TABLE users_tasks (
     task_id BIGINT,
     user_id BIGINT,
     PRIMARY KEY (task_id, user_id),
     FOREIGN KEY (task_id) REFERENCES tasks (task_id),
     FOREIGN KEY (user_id) REFERENCES user_detail (user_id)
+);
+
+CREATE TABLE `user_detail_audit` (
+  `user_id` bigint NOT NULL,
+  `rev` bigint NOT NULL,
+  `revtype` tinyint DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `password` varchar(60) DEFAULT NULL,
+  `user_mail` varchar(150) DEFAULT NULL,
+  `user_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`rev`,`user_id`)
 );
 
 

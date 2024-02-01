@@ -23,7 +23,7 @@ import org.hibernate.envers.NotAudited;
 @Entity
 @Table(name = "user_detail")
 @Audited
-@AuditTable(value = "users_detail_audit")
+@AuditTable(value = "user_detail_audit")
 public class UserEntity implements UserDetails {
 
     @Id
