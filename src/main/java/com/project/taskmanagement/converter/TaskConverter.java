@@ -26,9 +26,9 @@ public class TaskConverter {
         PriorityDTO priorityDTO = PriorityConverter.convertToDTO(taskEntity.getPriority());
         taskDTO.setPriority(priorityDTO);
 
-        
+        taskDTO.setDueAt(taskEntity.getDueAt());
+        taskDTO.setCompletedAt(taskEntity.getCompletedAt());
 
-        
         return taskDTO;
     }
 
@@ -43,10 +43,9 @@ public class TaskConverter {
         PriorityEntity priorityEntity = PriorityConverter.convertToEntity(taskDTO.getPriority());
         taskEntity.setPriority(priorityEntity);
 
-        taskEntity.setDueDate(taskDTO.getDueDate());
-        taskEntity.setCreatedDate(taskDTO.getCreatedDate());
-        taskEntity.setCompletedDate(taskDTO.getCompletedDate());
-        taskEntity.setModifiedDate(taskDTO.getModifiedDate());
+        taskEntity.setDueAt(taskDTO.getDueAt());
+        taskEntity.setCompletedAt(taskDTO.getCompletedAt());
+
         return taskEntity;
     }
 }
