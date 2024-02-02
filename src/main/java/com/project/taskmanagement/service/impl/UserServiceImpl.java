@@ -39,25 +39,77 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String createUser(UserDTO userDTO) {
-        Optional<UserEntity> existingUser = userRepository.findByUserMail(userDTO.getUserMail());
+        
+        
+        Optional<UserEntity> existingUserByMail = userRepository.findByUserMail(userDTO.getUserMail());
 
-        if (existingUser.isPresent()) {
-            if (existingUser.get().isActive()) {
-                List<ErrorModel> errorModelList = new ArrayList<>();
-                ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
-                errorModelList.add(errorModel);
-                throw new BusinessException(errorModelList);
+        if (existingUserByMail.isPresent()) {
+            System.out.println("Mail already exists: ");
+
+            Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
+            if (existingUserByName.isPresent()) {
+                System.out.println("Mail already exists + UserName exists ");
+
+                if (existingUserByName.get().equals(existingUserByMail.get())) {
+
+                    System.out.println("Mail already exists + UserName exists + Same Account");
+
+                    if (existingUserByMail.get().isActive()) {
+
+                        System.out.println("Mail already exists + UserName exists + Same Account + Active");
+                        List<ErrorModel> errorModelList = new ArrayList<>();
+                        ErrorModel errorModel = new ErrorModel();
+                        errorModel.setCode(
+                                messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
+                        errorModel.setMessage(
+                                messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
+                        errorModelList.add(errorModel);
+                        throw new BusinessException(errorModelList);
+
+                    } else {
+
+                        System.out.println("Mail already exists + UserName exists + Same Account + Not Active");
+
+                        existingUserByMail.get().setActive(true);
+
+                        String password = userDTO.getPassword();
+                        String encodedPassword = passwordEncoder.encode(password);
+                        existingUserByMail.get().setPassword(encodedPassword);
+                        existingUserByMail.get().setRoleId(userDTO.getRoleId());
+
+                        userRepository.save(existingUserByMail.get());
+
+                        return messageSource.getMessage("user.activated", null,
+                                    LocaleContextHolder.getLocale());
+
+                    }
+
+                } else {
+                    System.out.println("Mail already exists + UserName exists + Different Account");
+                    return messageSource.getMessage("user.mail.exists.name.exists.not_match", null,
+                            LocaleContextHolder.getLocale());
+                }
 
             } else {
-                existingUser.get().setActive(true);
-                userRepository.save(existingUser.get());
-                return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
+                System.out.println("Mail already exists + UserName Not exists ");
+                return messageSource.getMessage("user.mail.exists.name.not_match", null,
+                        LocaleContextHolder.getLocale());
             }
+
         } else {
-            UserEntity newUser = UserConverter.convertToEntity(userDTO);
+            System.out.println("Mail Not exists: ");
+
+            Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
+            if (existingUserByName.isPresent()) {
+
+                System.out.println("Mail Not exists + UserName exists ");
+                return messageSource.getMessage("user.name.exists.mail.not_match", null,
+                        LocaleContextHolder.getLocale());
+
+            } else {
+                System.out.println("Mail Not exists + UserName Not exists ");
+
+                UserEntity newUser = UserConverter.convertToEntity(userDTO);
             newUser.setActive(true);
 
             String password = userDTO.getPassword();
@@ -66,7 +118,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             userRepository.save(newUser);
             return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
+
+
+
+            }
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     @Override

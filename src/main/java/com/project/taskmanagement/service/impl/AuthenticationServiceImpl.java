@@ -174,28 +174,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
         if (userOptional.isPresent()) {
 
-            try {
-                Authentication auth = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(userName, password));
-
-                String token = tokenService.generateJwt(auth);
-
-                UserEntity userEntity = userOptional.get();
-                UserDTO userDTO = userConverter.convertToDTO(userEntity);
-                userDTO.setToken(token);
-                return userDTO;
-            }
-
-            catch (AuthenticationException e) {
+            if(userOptional.get().isActive()){
+                try {
+                    Authentication auth = authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(userName, password));
+    
+                    String token = tokenService.generateJwt(auth);
+    
+                    UserEntity userEntity = userOptional.get();
+                    UserDTO userDTO = userConverter.convertToDTO(userEntity);
+                    userDTO.setToken(token);
+                    return userDTO;
+                }
+    
+                catch (AuthenticationException e) {
+                    List<ErrorModel> errorModelList = new ArrayList<>();
+                    ErrorModel errorModel = new ErrorModel();
+                    errorModel.setCode(
+                            messageSource.getMessage("user.error.authentication.code", null,
+                                    LocaleContextHolder.getLocale()));
+                    errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null,
+                            LocaleContextHolder.getLocale()));
+                    errorModelList.add(errorModel);
+                    throw new BusinessException(errorModelList);
+                }
+            }else{
                 List<ErrorModel> errorModelList = new ArrayList<>();
-                ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode(
-                        messageSource.getMessage("user.error.authentication.code", null,
-                                LocaleContextHolder.getLocale()));
-                errorModel.setMessage(messageSource.getMessage("user.error.authentication.message", null,
-                        LocaleContextHolder.getLocale()));
-                errorModelList.add(errorModel);
-                throw new BusinessException(errorModelList);
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.condition.deactivated.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.condition.deactivated.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
             }
 
         } else {
