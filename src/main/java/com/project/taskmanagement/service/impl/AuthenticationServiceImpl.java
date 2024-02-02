@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.RoleConverter;
 import com.project.taskmanagement.converter.UserConverter;
@@ -51,51 +52,120 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public String createAdminUser(UserDTO userDTO) {
-        Optional<UserEntity> existingUser = userRepository.findByUserName(userDTO.getUserName());
 
-        if (existingUser.isPresent()) {
-            if (existingUser.get().isActive()) {
-                List<ErrorModel> errorModelList = new ArrayList<>();
-                ErrorModel errorModel = new ErrorModel();
-                errorModel.setCode(messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
-                errorModel.setMessage(
-                        messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
-                errorModelList.add(errorModel);
-                throw new BusinessException(errorModelList);
+        Optional<UserEntity> existingUserByMail = userRepository.findByUserMail(userDTO.getUserMail());
+
+        if (existingUserByMail.isPresent()) {
+            System.out.println("Mail already exists: ");
+
+            Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
+            if (existingUserByName.isPresent()) {
+                System.out.println("Mail already exists + UserName exists ");
+
+                if (existingUserByName.get().equals(existingUserByMail.get())) {
+
+                    System.out.println("Mail already exists + UserName exists + Same Account");
+
+                    if (existingUserByMail.get().isActive()) {
+
+                        System.out.println("Mail already exists + UserName exists + Same Account + Active");
+                        List<ErrorModel> errorModelList = new ArrayList<>();
+                        ErrorModel errorModel = new ErrorModel();
+                        errorModel.setCode(
+                                messageSource.getMessage("user.exists.code", null, LocaleContextHolder.getLocale()));
+                        errorModel.setMessage(
+                                messageSource.getMessage("user.exists.message", null, LocaleContextHolder.getLocale()));
+                        errorModelList.add(errorModel);
+                        throw new BusinessException(errorModelList);
+
+                    } else {
+
+                        System.out.println("Mail already exists + UserName exists + Same Account + Not Active");
+
+                        existingUserByMail.get().setActive(true);
+
+                        String password = userDTO.getPassword();
+                        String encodedPassword = passwordEncoder.encode(password);
+                        existingUserByMail.get().setPassword(encodedPassword);
+
+                        boolean adminRole = roleRepository.existsByDesignation("ADMIN");
+                        if (adminRole) {
+
+                            RoleEntity adminRoleId = roleRepository.getRoleIdByDesignation("ADMIN");
+
+                            RoleDTO adminDTO = new RoleDTO();
+                            adminDTO.setRoleId(adminRoleId.getRoleId());
+
+                            existingUserByMail.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
+
+                            userRepository.save(existingUserByMail.get());
+                            return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
+                        } else {
+                            return messageSource.getMessage("role.not_found.code", null,
+                                    LocaleContextHolder.getLocale());
+                        }
+
+                    }
+
+                } else {
+                    System.out.println("Mail already exists + UserName exists + Different Account");
+                    return messageSource.getMessage("user.mail.exists.name.exists.not_match", null,
+                            LocaleContextHolder.getLocale());
+                }
 
             } else {
-                existingUser.get().setActive(true);
-
-                String password = userDTO.getPassword();
-                String encodedPassword = passwordEncoder.encode(password);
-                existingUser.get().setPassword(encodedPassword);
-
-                RoleDTO adminDTO = new RoleDTO();
-                adminDTO.setRoleId((long) 1);
-                existingUser.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
-                userRepository.save(existingUser.get());
-                return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
+                System.out.println("Mail already exists + UserName Not exists ");
+                return messageSource.getMessage("user.mail.exists.name.not_match", null,
+                        LocaleContextHolder.getLocale());
             }
+
         } else {
+            System.out.println("Mail Not exists: ");
 
-            UserEntity newUser = UserConverter.convertToEntity(userDTO);
+            Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
+            if (existingUserByName.isPresent()) {
 
-            String password = userDTO.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
+                System.out.println("Mail Not exists + UserName exists ");
+                return messageSource.getMessage("user.name.exists.mail.not_match", null,
+                        LocaleContextHolder.getLocale());
 
-            newUser.setActive(true);
+            } else {
+                System.out.println("Mail Not exists + UserName Not exists ");
 
-            RoleEntity adminEntity = new RoleEntity();
-            adminEntity.setRoleId((long) 1);
-            newUser.setRoleId(adminEntity);
+                boolean adminRole = roleRepository.existsByDesignation("ADMIN");
+                if (adminRole) {
+                    UserEntity newUser = UserConverter.convertToEntity(userDTO);
 
-            newUser.setPassword(encodedPassword);
+                    String password = userDTO.getPassword();
+                    String encodedPassword = passwordEncoder.encode(password);
 
-            userRepository.save(newUser);
-            return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
+                    newUser.setActive(true);
+
+                    newUser.setPassword(encodedPassword);
+
+                    RoleEntity adminRoleId = roleRepository.getRoleIdByDesignation("ADMIN");
+
+                    RoleDTO adminDTO = new RoleDTO();
+                    adminDTO.setRoleId(adminRoleId.getRoleId());
+
+                    newUser.setRoleId(RoleConverter.convertToEntity(adminDTO));
+
+                    userRepository.save(newUser);
+                    return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
+                } else {
+                    return messageSource.getMessage("role.not_found.code", null, LocaleContextHolder.getLocale());
+
+                }
+
+            }
+
         }
+
     }
 
     @Override

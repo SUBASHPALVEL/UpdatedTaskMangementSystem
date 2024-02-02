@@ -39,7 +39,7 @@ CREATE TABLE user_detail (
     password VARCHAR(60) NOT NULL,
     designation BIGINT,
     is_active BOOLEAN NOT NULL DEFAULT true,
-    created_by BIGINT NOT NULL DEFAULT 0,
+    created_by BIGINT DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_by BIGINT DEFAULT NULL,
     last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
