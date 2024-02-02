@@ -18,4 +18,5 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
     RoleEntity getRoleIdByDesignation(String designation);
 
+
 }
