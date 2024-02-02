@@ -19,7 +19,6 @@ public class AuditingConfiguration implements AuditorAware<Long>  {
     @Override
     public Optional<Long> getCurrentAuditor() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
     return userRepository.findByUserName(username)
             .map(UserEntity::getUserId);
 }
