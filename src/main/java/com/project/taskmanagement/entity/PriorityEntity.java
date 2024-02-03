@@ -1,5 +1,6 @@
 package com.project.taskmanagement.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,5 +27,7 @@ public class PriorityEntity {
     @Size(min = 2, max = 50, message = "Priority must be between 02 and 50 of size")
     @Column(name = "priority_status", nullable = false, unique = true)
     private String priorityStatus;
+
+    
 
 }
