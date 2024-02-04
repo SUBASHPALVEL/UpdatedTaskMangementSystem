@@ -14,9 +14,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.taskmanagement.Repository.AuditRepository;
+import com.project.taskmanagement.Repository.TableRegistryRepository;
 import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.UserDTO;
+import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
@@ -36,6 +39,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private TableRegistryRepository tableRegistryRepository;
+
+    @Autowired
+    private AuditRepository auditRepository;
+
 
     @Override
     public String createUser(UserDTO userDTO) {
@@ -57,6 +67,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
                 userRepository.save(existingUserByNameAndMail.get());
+
+
+                String modifiedValue = existingUserByNameAndMail.get().toString();
+                AuditEntity auditEntity = new AuditEntity();
+                auditEntity.setModifiedValue(modifiedValue);
+                Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+                auditEntity.setTableId(tableId);
+                auditEntity.setAction("update");
+                auditRepository.save(auditEntity);
+
+
+
                 return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
             }
         }
@@ -81,6 +103,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             newUser.setPassword(encodedPassword);
 
             userRepository.save(newUser);
+
+
+            String modifiedValue = newUser.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("create");
+            auditRepository.save(auditEntity);
+
+
+
+
             return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
 
     }
@@ -124,10 +159,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
+            user.setName(userDTO.getName());
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
             user.setRoleId(userDTO.getRoleId());
             userRepository.save(user);
+
+
+            String modifiedValue = user.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("update");
+            auditRepository.save(auditEntity);
+
+
+
             return messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -148,6 +196,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity user = userOptional.get();
             user.setActive(false);
             userRepository.save(user);
+
+
+            String modifiedValue = user.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("delete");
+            auditRepository.save(auditEntity);
+
+
             return messageSource.getMessage("user.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -175,6 +234,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);
                 userRepository.save(user);
+
+
+                String modifiedValue = user.toString();
+                AuditEntity auditEntity = new AuditEntity();
+                auditEntity.setModifiedValue(modifiedValue);
+                Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+                auditEntity.setTableId(tableId);
+                auditEntity.setAction("update");
+                auditRepository.save(auditEntity);
+
+
                 return messageSource.getMessage("user.password.updated", null, LocaleContextHolder.getLocale());
 
             } else {

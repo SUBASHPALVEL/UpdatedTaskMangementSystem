@@ -17,7 +17,7 @@ public class TableRegistry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "table_id")
-    private Long id;
+    private Long tableId;
 
     @Column(name= "table_name", unique = true, nullable = false)
     private String tableName;

@@ -29,7 +29,7 @@ public class AuditingConfiguration implements AuditorAware<Long>  {
     if (username.equals("anonymousUser") && userAuthority.equals("ROLE_ANONYMOUS")) {
         return Optional.of(0L);
     }
-     return userRepository.findByUserName(username)
+    return userRepository.findByUserName(username)
             .map(UserEntity::getUserId);
             
 }

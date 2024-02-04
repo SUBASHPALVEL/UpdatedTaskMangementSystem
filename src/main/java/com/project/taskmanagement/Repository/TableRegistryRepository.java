@@ -9,5 +9,5 @@ import com.project.taskmanagement.entity.TableRegistry;
 public interface TableRegistryRepository extends JpaRepository<TableRegistry, Long> {
     Boolean existsByTableName(String tableName);
 
-    
+    TableRegistry getTableIdByTableName(String tableName);
 }

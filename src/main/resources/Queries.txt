@@ -56,25 +56,22 @@ CREATE TABLE users_tasks (
     FOREIGN KEY (user_id) REFERENCES user_detail (user_id)
 );
 
-CREATE TABLE user_detail_audit (
-    rev bigint NOT NULL,
-    user_id bigint NOT NULL,
-    name varchar(100) NOT NULL,
-    revtype tinyint DEFAULT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT true,
-    password varchar(60) DEFAULT NULL,
-    user_mail varchar(150) DEFAULT NULL,
-    user_name varchar(50) DEFAULT NULL,
-    last_modified_by BIGINT DEFAULT NULL,
-    last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`rev`,`user_id`)
+CREATE TABLE table_registry (
+    table_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    table_name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE revinfo (
-  rev INT NOT NULL AUTO_INCREMENT,
-  revtstmp BIGINT NOT NULL,
-  PRIMARY KEY (rev)
+CREATE TABLE audit_log (
+    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    table_id BIGINT NOT NULL,
+    modified_value TEXT,
+    action varchar(10), 
+    last_modified_by BIGINT DEFAULT NULL,
+    last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (table_id) REFERENCES table_registry (table_id)
+
 );
+
 
 
 --For Assigned Tasks

@@ -35,19 +35,28 @@ public class EntityRegistrationListener implements ApplicationListener<ContextRe
     }
 
     private void storeTableNamesInTableRegistry() {
+        System.out.println("-------------------------------------------------------------------");
+        System.out.println(entityManager.getMetamodel());
+        System.out.println("-------------------------------------------------------------------");
         for (EntityType<?> entityType : entityManager.getMetamodel().getEntities()) {
             Class<?> javaType = entityType.getJavaType();
 
-            // Check if the class has the @Table annotation
             if (javaType.isAnnotationPresent(Table.class)) {
                 Table tableAnnotation = javaType.getAnnotation(Table.class);
                 String tableName = tableAnnotation.name();
 
-                if (!tableRegistryRepository.existsByTableName(tableName)) {
-                    System.out.println(tableName );
-                    tableRegistryService.storeTableName(tableName);
+                if(!tableName.equals("table_registry")){
+
+                    if (!tableRegistryRepository.existsByTableName(tableName)) {
+                        System.out.println(tableName );
+                        tableRegistryService.storeTableName(tableName);
+                    }
+
                 }
+
+                
             }
         }
     }
 }
+

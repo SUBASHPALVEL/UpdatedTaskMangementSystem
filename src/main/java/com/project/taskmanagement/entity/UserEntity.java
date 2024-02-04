@@ -19,11 +19,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
+@ToString
 @Setter
 @Getter
 @Entity
@@ -31,8 +29,6 @@ import org.hibernate.envers.NotAudited;
 
 @EntityListeners(AuditingEntityListener.class)
 
-@Audited
-@AuditTable(value = "user_detail_audit")
 public class UserEntity implements UserDetails {
 
     @Id
@@ -57,7 +53,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotAudited
     @ManyToOne
     @JoinColumn(name = "designation", nullable = false)
     private RoleEntity roleId;
@@ -65,12 +60,10 @@ public class UserEntity implements UserDetails {
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @NotAudited
     @CreatedBy
     @Column(name = "created_by", updatable = false )
     private Long createdBy;
 
-    @NotAudited
     @CreatedDate
     @Column(name = "created_at" , updatable = false)
     private LocalDateTime createdAt;
@@ -83,7 +76,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "last_modified_at" , insertable = false)
     private LocalDateTime lastModifiedAt;
 
-    @NotAudited
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
