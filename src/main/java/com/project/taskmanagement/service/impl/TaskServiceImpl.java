@@ -9,11 +9,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.project.taskmanagement.Repository.AuditRepository;
+import com.project.taskmanagement.Repository.TableRegistryRepository;
 import com.project.taskmanagement.Repository.TaskRepository;
 import com.project.taskmanagement.converter.TaskConverter;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.TaskDTO;
 import com.project.taskmanagement.dto.UserDTO;
+import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.TaskEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
@@ -32,6 +35,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private TableRegistryRepository tableRegistryRepository;
+
+    @Autowired
+    private AuditRepository auditRepository;
+
     @Override
     public String createTask(TaskDTO taskDTO) {
         TaskEntity taskEntity = taskConverter.convertToEntity(taskDTO);
@@ -43,6 +52,15 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setAssignedUsers(usersEntities);
         taskEntity.setActive(true);
         taskRepository.save(taskEntity);
+
+        String modifiedValue = taskEntity.toString();
+        AuditEntity auditEntity = new AuditEntity();
+        auditEntity.setModifiedValue(modifiedValue);
+        Long tableId = tableRegistryRepository.getTableIdByTableName("tasks").getTableId();
+        auditEntity.setTableId(tableId);
+        auditEntity.setAction("create");
+        auditRepository.save(auditEntity);
+
         return messageSource.getMessage("task.created", null, LocaleContextHolder.getLocale());
     }
 
@@ -121,6 +139,16 @@ public class TaskServiceImpl implements TaskService {
             updatedTaskEntity.setActive(true);
             updatedTaskEntity.setTaskId(taskId);
             taskRepository.save(updatedTaskEntity);
+
+
+            String modifiedValue = updatedTaskEntity.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("tasks").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("update");
+            auditRepository.save(auditEntity);
+
             return messageSource.getMessage("task.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -137,9 +165,18 @@ public class TaskServiceImpl implements TaskService {
     public String deleteTask(Long taskId) {
         Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isPresent()) {
-            TaskEntity task = taskOptional.get();
-            task.setActive(false);
-            taskRepository.save(task);
+            TaskEntity taskEntity = taskOptional.get();
+            taskEntity.setActive(false);
+            taskRepository.save(taskEntity);
+
+            String modifiedValue = taskEntity.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("tasks").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("delete");
+            auditRepository.save(auditEntity);
+
             return messageSource.getMessage("task.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
