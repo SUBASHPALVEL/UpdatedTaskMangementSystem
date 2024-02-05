@@ -57,8 +57,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 userDTO.getUserMail());
         if (existingUserByNameAndMail.isPresent()) {
             if (existingUserByNameAndMail.get().isActive()) {
-                return messageSource.getMessage("user.account.exists", null,
-                        LocaleContextHolder.getLocale());
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode(
+                        messageSource.getMessage("user.account.exists.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.account.exists.message", null, LocaleContextHolder.getLocale()));
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
             } else {
                 existingUserByNameAndMail.get().setActive(true);
 
@@ -90,14 +96,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         Optional<UserEntity> existingUserByMail = userRepository.findByUserMail(userDTO.getUserMail());
         if (existingUserByMail.isPresent()) {
-            return messageSource.getMessage("user.mail.exists", null,
-                    LocaleContextHolder.getLocale());
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.mail.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.mail.exists.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
 
         Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
         if (existingUserByName.isPresent()) {
-            return messageSource.getMessage("user.name.exists", null,
-                    LocaleContextHolder.getLocale());
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.name.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.name.exists.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
 
         UserEntity newUser = UserConverter.convertToEntity(userDTO);
