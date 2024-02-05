@@ -1,5 +1,6 @@
 package com.project.taskmanagement.listener;
 
+import com.project.taskmanagement.repository.TableRegistryRepository;
 import com.project.taskmanagement.service.TableRegistryService;
 
 import jakarta.persistence.EntityManager;
@@ -7,8 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Table;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.transaction.Transactional;
-
-import com.project.taskmanagement.Repository.TableRegistryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -35,7 +34,7 @@ public class EntityRegistrationListener implements ApplicationListener<ContextRe
     }
 
     private void storeTableNamesInTableRegistry() {
-        
+
         for (EntityType<?> entityType : entityManager.getMetamodel().getEntities()) {
             Class<?> javaType = entityType.getJavaType();
 
@@ -43,7 +42,7 @@ public class EntityRegistrationListener implements ApplicationListener<ContextRe
                 Table tableAnnotation = javaType.getAnnotation(Table.class);
                 String tableName = tableAnnotation.name();
 
-                if(!tableName.equals("table_registry")){
+                if (!tableName.equals("table_registry")) {
 
                     if (!tableRegistryRepository.existsByTableName(tableName)) {
                         tableRegistryService.storeTableName(tableName);
@@ -51,9 +50,7 @@ public class EntityRegistrationListener implements ApplicationListener<ContextRe
 
                 }
 
-                
             }
         }
     }
 }
-

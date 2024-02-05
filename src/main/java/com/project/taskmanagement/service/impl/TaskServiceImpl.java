@@ -1,5 +1,6 @@
 package com.project.taskmanagement.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +10,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.project.taskmanagement.Repository.AuditRepository;
-import com.project.taskmanagement.Repository.TableRegistryRepository;
-import com.project.taskmanagement.Repository.TaskRepository;
 import com.project.taskmanagement.converter.TaskConverter;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.TaskDTO;
@@ -21,6 +19,10 @@ import com.project.taskmanagement.entity.TaskEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.repository.AuditRepository;
+import com.project.taskmanagement.repository.TableRegistryRepository;
+import com.project.taskmanagement.repository.TaskRepository;
+import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.TaskService;
 
 @Service
@@ -41,6 +43,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private AuditRepository auditRepository;
 
+    @Autowired
+    private CurrentUserService currentUserService;
+
     @Override
     public String createTask(TaskDTO taskDTO) {
         TaskEntity taskEntity = taskConverter.convertToEntity(taskDTO);
@@ -51,6 +56,10 @@ public class TaskServiceImpl implements TaskService {
         }
         taskEntity.setAssignedUsers(usersEntities);
         taskEntity.setActive(true);
+
+        LocalDateTime now = LocalDateTime.now();
+        taskEntity.setCreatedAt(now);
+        taskEntity.setCreatedBy(currentUserService.getCurrentUserId());
         taskRepository.save(taskEntity);
 
         String modifiedValue = taskEntity.toString();
@@ -138,8 +147,12 @@ public class TaskServiceImpl implements TaskService {
             updatedTaskEntity.setAssignedUsers(updatedAssignedUsersEntities);
             updatedTaskEntity.setActive(true);
             updatedTaskEntity.setTaskId(taskId);
-            taskRepository.save(updatedTaskEntity);
 
+            LocalDateTime now = LocalDateTime.now();
+            updatedTaskEntity.setLastModifiedAt(now);
+            updatedTaskEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+
+            taskRepository.save(updatedTaskEntity);
 
             String modifiedValue = updatedTaskEntity.toString();
             AuditEntity auditEntity = new AuditEntity();
@@ -147,6 +160,8 @@ public class TaskServiceImpl implements TaskService {
             Long tableId = tableRegistryRepository.getTableIdByTableName("tasks").getTableId();
             auditEntity.setTableId(tableId);
             auditEntity.setAction("update");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
             auditRepository.save(auditEntity);
 
             return messageSource.getMessage("task.updated", null, LocaleContextHolder.getLocale());
@@ -167,6 +182,9 @@ public class TaskServiceImpl implements TaskService {
         if (taskOptional.isPresent()) {
             TaskEntity taskEntity = taskOptional.get();
             taskEntity.setActive(false);
+            LocalDateTime now = LocalDateTime.now();
+            taskEntity.setLastModifiedAt(now);
+            taskEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
             taskRepository.save(taskEntity);
 
             String modifiedValue = taskEntity.toString();
@@ -175,6 +193,8 @@ public class TaskServiceImpl implements TaskService {
             Long tableId = tableRegistryRepository.getTableIdByTableName("tasks").getTableId();
             auditEntity.setTableId(tableId);
             auditEntity.setAction("delete");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
             auditRepository.save(auditEntity);
 
             return messageSource.getMessage("task.deleted", null, LocaleContextHolder.getLocale());

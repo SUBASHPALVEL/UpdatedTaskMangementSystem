@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 
 public class AuditDTO {
-    
+
     private long logId;
 
     private Long tableId;

@@ -8,9 +8,9 @@ import org.springframework.context.MessageSource;
 
 @Configuration
 public class MessageSourceConfiguration {
-    
+
     @Bean
-    public MessageSource messageSource(){
+    public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
@@ -18,7 +18,7 @@ public class MessageSourceConfiguration {
     }
 
     @Bean
-    public LocalValidatorFactoryBean getValidator(){
+    public LocalValidatorFactoryBean getValidator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -130,14 +128,5 @@ public class UserEntity implements UserDetails {
         this.userName = username;
         this.password = password;
         this.roleId = roleId;
-    }
-
-    public UserEntity( String username, String password, RoleEntity roleId, String userMail, String name) {
-        super();
-        this.userName = username;
-        this.password = password;
-        this.roleId = roleId;
-        this.userMail = userMail;
-        this.name = name;
     }
 }

@@ -12,7 +12,6 @@ import com.project.taskmanagement.entity.TaskEntity;
 @Component
 public class TaskConverter {
 
-
     public static TaskDTO convertToDTO(TaskEntity taskEntity) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setTaskId(taskEntity.getTaskId());

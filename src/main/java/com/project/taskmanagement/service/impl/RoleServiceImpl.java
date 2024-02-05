@@ -9,14 +9,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.project.taskmanagement.Repository.RoleRepository;
-import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.RoleConverter;
 import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.repository.RoleRepository;
+import com.project.taskmanagement.repository.UserRepository;
 import com.project.taskmanagement.service.RoleService;
 
 @Service

@@ -19,6 +19,6 @@ public class TableRegistry {
     @Column(name = "table_id")
     private Long tableId;
 
-    @Column(name= "table_name", unique = true, nullable = false)
+    @Column(name = "table_name", unique = true, nullable = false)
     private String tableName;
 }

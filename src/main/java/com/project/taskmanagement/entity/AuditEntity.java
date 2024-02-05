@@ -21,7 +21,7 @@ public class AuditEntity {
     @Column(name = "log_id")
     private long logId;
 
-    @Column(name = "table_id",nullable = false)
+    @Column(name = "table_id", nullable = false)
     private Long tableId;
 
     @Column(name = "modified_value", columnDefinition = "TEXT")
@@ -30,10 +30,10 @@ public class AuditEntity {
     @Column(name = "action")
     private String action;
 
-    @Column(name = "last_modified_by" )
+    @Column(name = "last_modified_by")
     private Long lastModifiedBy;
 
-    @Column(name = "last_modified_at" )
+    @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;
 
 }
