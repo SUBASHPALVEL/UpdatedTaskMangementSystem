@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.project.taskmanagement.repository1.UserRepository;
+import com.project.taskmanagement.repository.UserRepository;
 import com.project.taskmanagement.service.CurrentUserService;
 
 @Service
