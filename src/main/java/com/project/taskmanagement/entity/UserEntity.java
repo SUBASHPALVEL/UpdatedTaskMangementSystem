@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,20 +14,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
+@ToString
 @Setter
 @Getter
 @Entity
 @Table(name = "user_detail")
 
-@EntityListeners(AuditingEntityListener.class)
-
-@Audited
-@AuditTable(value = "user_detail_audit")
 public class UserEntity implements UserDetails {
 
     @Id
@@ -57,7 +46,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotAudited
     @ManyToOne
     @JoinColumn(name = "designation", nullable = false)
     private RoleEntity roleId;
@@ -65,27 +53,36 @@ public class UserEntity implements UserDetails {
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @NotAudited
-    @CreatedBy
     @Column(name = "created_by", updatable = false )
     private Long createdBy;
 
-    @NotAudited
-    @CreatedDate
+
     @Column(name = "created_at" , updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedBy
-    @Column(name = "last_modified_by" , insertable = false)
+    @Column(name = "last_modified_by" )
     private Long lastModifiedBy;
 
-    @LastModifiedDate
-    @Column(name = "last_modified_at" , insertable = false)
+
+    @Column(name = "last_modified_at" )
     private LocalDateTime lastModifiedAt;
 
-    @NotAudited
     @ManyToMany(mappedBy = "assignedUsers")
     private List<TaskEntity> assignedTasks = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return  "UserEntity{" +
+                "userId=" + userId +
+                ", name=" + name + 
+                ", userName=" + userName + 
+                ", userMail=" + userMail + 
+                ", roleId=" + roleId.getRoleId() +
+                ", isActive=" + isActive +
+                '}';
+}
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -131,14 +128,5 @@ public class UserEntity implements UserDetails {
         this.userName = username;
         this.password = password;
         this.roleId = roleId;
-    }
-
-    public UserEntity(Long userId, String username, String password, RoleEntity roleId, String userMail) {
-        super();
-        this.userId = userId;
-        this.userName = username;
-        this.password = password;
-        this.roleId = roleId;
-        this.userMail = userMail;
     }
 }

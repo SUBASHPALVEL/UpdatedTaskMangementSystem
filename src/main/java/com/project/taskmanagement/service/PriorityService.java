@@ -5,7 +5,7 @@ import java.util.List;
 import com.project.taskmanagement.dto.PriorityDTO;
 
 public interface PriorityService {
-    
+
     String createPriority(PriorityDTO priorityDTO);
 
     List<PriorityDTO> getAllPriorities();

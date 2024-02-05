@@ -1,4 +1,4 @@
-package com.project.taskmanagement.Repository;
+package com.project.taskmanagement.repository;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.project.taskmanagement.entity.TaskEntity;
 
 @Repository
-public interface TaskRepository extends JpaRepository<TaskEntity, Long> ,RevisionRepository<TaskEntity, Long, Long> {
+public interface TaskRepository extends JpaRepository<TaskEntity, Long>, RevisionRepository<TaskEntity, Long, Long> {
 
     List<TaskEntity> findByIsActiveTrue();
 

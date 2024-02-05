@@ -8,12 +8,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.project.taskmanagement.Repository.PriorityRepository;
 import com.project.taskmanagement.converter.PriorityConverter;
 import com.project.taskmanagement.dto.PriorityDTO;
 import com.project.taskmanagement.entity.PriorityEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.repository.PriorityRepository;
 import com.project.taskmanagement.service.PriorityService;
 
 @Service

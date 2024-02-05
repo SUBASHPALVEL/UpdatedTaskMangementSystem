@@ -1,10 +1,10 @@
 package com.project.taskmanagement.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -14,12 +14,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.taskmanagement.Repository.UserRepository;
 import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.UserDTO;
+import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.repository.AuditRepository;
+import com.project.taskmanagement.repository.TableRegistryRepository;
+import com.project.taskmanagement.repository.UserRepository;
+import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.UserService;
 
 @Service
@@ -37,16 +41,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private TableRegistryRepository tableRegistryRepository;
+
+    @Autowired
+    private AuditRepository auditRepository;
+
+    @Autowired
+    private CurrentUserService currentUserService;
+
     @Override
     public String createUser(UserDTO userDTO) {
-        
-        
-        Optional<UserEntity> existingUserByNameAndMail = userRepository.findByUserNameAndUserMail(userDTO.getUserName(),userDTO.getUserMail());
-        if(existingUserByNameAndMail.isPresent()){
-            if(existingUserByNameAndMail.get().isActive()){
+
+        Optional<UserEntity> existingUserByNameAndMail = userRepository.findByUserNameAndUserMail(userDTO.getUserName(),
+                userDTO.getUserMail());
+        if (existingUserByNameAndMail.isPresent()) {
+            if (existingUserByNameAndMail.get().isActive()) {
                 return messageSource.getMessage("user.account.exists", null,
-                                    LocaleContextHolder.getLocale());
-            }else{
+                        LocaleContextHolder.getLocale());
+            } else {
                 existingUserByNameAndMail.get().setActive(true);
 
                 String password = userDTO.getPassword();
@@ -55,33 +68,59 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 existingUserByNameAndMail.get().setName(userDTO.getName());
                 existingUserByNameAndMail.get().setRoleId(userDTO.getRoleId());
 
+                LocalDateTime now = LocalDateTime.now();
+                existingUserByNameAndMail.get().setLastModifiedAt(now);
+                existingUserByNameAndMail.get().setLastModifiedBy(currentUserService.getCurrentUserId());
 
                 userRepository.save(existingUserByNameAndMail.get());
+
+                String modifiedValue = existingUserByNameAndMail.get().toString();
+                AuditEntity auditEntity = new AuditEntity();
+                auditEntity.setModifiedValue(modifiedValue);
+                Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+                auditEntity.setTableId(tableId);
+                auditEntity.setAction("update");
+                auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+                auditEntity.setLastModifiedAt(now);
+                auditRepository.save(auditEntity);
+
                 return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
             }
         }
 
         Optional<UserEntity> existingUserByMail = userRepository.findByUserMail(userDTO.getUserMail());
-        if(existingUserByMail.isPresent()) {
+        if (existingUserByMail.isPresent()) {
             return messageSource.getMessage("user.mail.exists", null,
-                                    LocaleContextHolder.getLocale());
+                    LocaleContextHolder.getLocale());
         }
 
         Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
-        if(existingUserByName.isPresent()){
+        if (existingUserByName.isPresent()) {
             return messageSource.getMessage("user.name.exists", null,
-            LocaleContextHolder.getLocale());
+                    LocaleContextHolder.getLocale());
         }
 
         UserEntity newUser = UserConverter.convertToEntity(userDTO);
-            newUser.setActive(true);
+        newUser.setActive(true);
 
-            String password = userDTO.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-            newUser.setPassword(encodedPassword);
+        String password = userDTO.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        newUser.setPassword(encodedPassword);
 
-            userRepository.save(newUser);
-            return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
+        LocalDateTime now = LocalDateTime.now();
+        newUser.setCreatedAt(now);
+        newUser.setCreatedBy(currentUserService.getCurrentUserId());
+        userRepository.save(newUser);
+
+        String modifiedValue = newUser.toString();
+        AuditEntity auditEntity = new AuditEntity();
+        auditEntity.setModifiedValue(modifiedValue);
+        Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+        auditEntity.setTableId(tableId);
+        auditEntity.setAction("create");
+        auditRepository.save(auditEntity);
+
+        return messageSource.getMessage("user.created", null, LocaleContextHolder.getLocale());
 
     }
 
@@ -103,9 +142,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity userEntity = userOptional.get();
             UserDTO userDTO = userConverter.convertToDTO(userEntity);
             return userDTO;
-            // Alternative for mapper and converter
-            // UserDTO userDTO = new UserDTO();
-            // BeanUtils.copyProperties(userOptional.get(), userDTO);
 
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -124,10 +160,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
+            user.setName(userDTO.getName());
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
             user.setRoleId(userDTO.getRoleId());
+
+            LocalDateTime now = LocalDateTime.now();
+            user.setLastModifiedAt(now);
+
+            user.setLastModifiedBy(currentUserService.getCurrentUserId());
             userRepository.save(user);
+
+            String modifiedValue = user.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("update");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+            auditRepository.save(auditEntity);
+
             return messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -147,7 +200,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
             user.setActive(false);
+            LocalDateTime now = LocalDateTime.now();
+            user.setLastModifiedAt(now);
+            user.setLastModifiedBy(currentUserService.getCurrentUserId());
             userRepository.save(user);
+
+            String modifiedValue = user.toString();
+            AuditEntity auditEntity = new AuditEntity();
+            auditEntity.setModifiedValue(modifiedValue);
+            Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+            auditEntity.setTableId(tableId);
+            auditEntity.setAction("delete");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+            auditRepository.save(auditEntity);
+
             return messageSource.getMessage("user.deleted", null, LocaleContextHolder.getLocale());
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
@@ -174,7 +241,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 String password = userDTO.getNewPassword();
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);
+                LocalDateTime now = LocalDateTime.now();
+                user.setLastModifiedAt(now);
+                user.setLastModifiedBy(currentUserService.getCurrentUserId());
                 userRepository.save(user);
+
+                String modifiedValue = user.toString();
+                AuditEntity auditEntity = new AuditEntity();
+                auditEntity.setModifiedValue(modifiedValue);
+                Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
+                auditEntity.setTableId(tableId);
+                auditEntity.setAction("update");
+                auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+                auditEntity.setLastModifiedAt(now);
+                auditRepository.save(auditEntity);
+
                 return messageSource.getMessage("user.password.updated", null, LocaleContextHolder.getLocale());
 
             } else {

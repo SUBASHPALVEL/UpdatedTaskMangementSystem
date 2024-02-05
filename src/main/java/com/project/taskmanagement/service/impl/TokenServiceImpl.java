@@ -1,4 +1,5 @@
 package com.project.taskmanagement.service.impl;
+
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import com.project.taskmanagement.service.TokenService;
 
 @Service
-public class TokenServiceImpl implements TokenService{
-    
+public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JwtEncoder jwtEncoder;

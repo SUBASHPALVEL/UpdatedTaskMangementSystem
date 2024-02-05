@@ -56,22 +56,20 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/api/report/**").hasRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.GET,"/api/tasks/user/**").permitAll();
-                    
-                    auth.requestMatchers(HttpMethod.POST,"/api/tasks").hasRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE,"/api/tasks").hasRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.GET,"/api/tasks").hasRole("ADMIN");
-                    
+                    auth.requestMatchers(HttpMethod.GET, "/api/tasks/user/**").permitAll();
+
+                    auth.requestMatchers(HttpMethod.POST, "/api/tasks").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/tasks").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/tasks").hasRole("ADMIN");
+
                     auth.requestMatchers("/api/users/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 });
 
         http
                 .oauth2ResourceServer(configurer -> configurer
-                    .jwt(jwtConfigurer -> jwtConfigurer
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                    )
-                );
+                        .jwt(jwtConfigurer -> jwtConfigurer
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
