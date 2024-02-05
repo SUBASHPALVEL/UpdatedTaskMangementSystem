@@ -15,8 +15,8 @@ import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository.RoleRepository;
-import com.project.taskmanagement.repository.UserRepository;
+import com.project.taskmanagement.repository1.RoleRepository;
+import com.project.taskmanagement.repository1.UserRepository;
 import com.project.taskmanagement.service.RoleService;
 
 @Service

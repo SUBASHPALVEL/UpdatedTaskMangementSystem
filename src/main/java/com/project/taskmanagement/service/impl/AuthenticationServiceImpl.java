@@ -20,10 +20,10 @@ import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository.AuditRepository;
-import com.project.taskmanagement.repository.RoleRepository;
-import com.project.taskmanagement.repository.TableRegistryRepository;
-import com.project.taskmanagement.repository.UserRepository;
+import com.project.taskmanagement.repository1.AuditRepository;
+import com.project.taskmanagement.repository1.RoleRepository;
+import com.project.taskmanagement.repository1.TableRegistryRepository;
+import com.project.taskmanagement.repository1.UserRepository;
 import com.project.taskmanagement.service.AuthenticationService;
 import com.project.taskmanagement.service.TokenService;
 
@@ -71,8 +71,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 userDTO.getUserMail());
         if (existingUserByNameAndMail.isPresent()) {
             if (existingUserByNameAndMail.get().isActive()) {
-                return messageSource.getMessage("user.account.exists", null,
-                        LocaleContextHolder.getLocale());
+
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode(
+                        messageSource.getMessage("user.account.exists.code", null, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.account.exists.message", null, LocaleContextHolder.getLocale()));
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
+
             } else {
                 existingUserByNameAndMail.get().setActive(true);
 
@@ -112,8 +120,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                     return messageSource.getMessage("user.activated", null, LocaleContextHolder.getLocale());
                 } else {
-                    return messageSource.getMessage("role.not_found.code", null,
-                            LocaleContextHolder.getLocale());
+
+                    List<ErrorModel> errorModelList = new ArrayList<>();
+                    ErrorModel errorModel = new ErrorModel();
+                    errorModel.setCode(
+                            messageSource.getMessage("role.not_found.code", null, LocaleContextHolder.getLocale()));
+                    errorModel.setMessage(
+                            messageSource.getMessage("role.not_found.message", null, LocaleContextHolder.getLocale()));
+                    errorModelList.add(errorModel);
+                    throw new BusinessException(errorModelList);
+
                 }
 
             }
@@ -121,14 +137,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Optional<UserEntity> existingUserByMail = userRepository.findByUserMail(userDTO.getUserMail());
         if (existingUserByMail.isPresent()) {
-            return messageSource.getMessage("user.mail.exists", null,
-                    LocaleContextHolder.getLocale());
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.mail.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.mail.exists.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
 
         Optional<UserEntity> existingUserByName = userRepository.findByUserName(userDTO.getUserName());
         if (existingUserByName.isPresent()) {
-            return messageSource.getMessage("user.name.exists", null,
-                    LocaleContextHolder.getLocale());
+            List<ErrorModel> errorModelList = new ArrayList<>();
+            ErrorModel errorModel = new ErrorModel();
+            errorModel.setCode(
+                    messageSource.getMessage("user.name.exists.code", null, LocaleContextHolder.getLocale()));
+            errorModel.setMessage(
+                    messageSource.getMessage("user.name.exists.message", null, LocaleContextHolder.getLocale()));
+            errorModelList.add(errorModel);
+            throw new BusinessException(errorModelList);
         }
 
         UserEntity newUser = UserConverter.convertToEntity(userDTO);

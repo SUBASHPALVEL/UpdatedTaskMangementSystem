@@ -13,7 +13,7 @@ import com.project.taskmanagement.dto.StatusDTO;
 import com.project.taskmanagement.entity.StatusEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository.StatusRepository;
+import com.project.taskmanagement.repository1.StatusRepository;
 import com.project.taskmanagement.service.StatusService;
 
 @Service
