@@ -20,9 +20,9 @@ import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository1.AuditRepository;
-import com.project.taskmanagement.repository1.TableRegistryRepository;
-import com.project.taskmanagement.repository1.UserRepository;
+import com.project.taskmanagement.repository.AuditRepository;
+import com.project.taskmanagement.repository.TableRegistryRepository;
+import com.project.taskmanagement.repository.UserRepository;
 import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.UserService;
 
