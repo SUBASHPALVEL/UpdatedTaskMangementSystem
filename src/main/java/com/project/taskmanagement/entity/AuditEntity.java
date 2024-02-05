@@ -1,12 +1,7 @@
 package com.project.taskmanagement.entity;
 
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +11,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Entity
@@ -36,12 +30,10 @@ public class AuditEntity {
     @Column(name = "action")
     private String action;
 
-    @LastModifiedBy
-    @Column(name = "last_modified_by" , insertable = false)
+    @Column(name = "last_modified_by" )
     private Long lastModifiedBy;
 
-    @LastModifiedDate
-    @Column(name = "last_modified_at" , insertable = false)
+    @Column(name = "last_modified_at" )
     private LocalDateTime lastModifiedAt;
 
 }

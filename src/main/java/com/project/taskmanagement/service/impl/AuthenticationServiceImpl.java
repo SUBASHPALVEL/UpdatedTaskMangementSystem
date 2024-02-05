@@ -1,5 +1,6 @@
 package com.project.taskmanagement.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +21,11 @@ import com.project.taskmanagement.converter.UserConverter;
 import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.entity.AuditEntity;
-import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
 import com.project.taskmanagement.service.AuthenticationService;
+import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.TokenService;
 
 import org.springframework.security.core.Authentication;
@@ -64,6 +65,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private AuditRepository auditRepository;
 
+    @Autowired
+    private CurrentUserService currentUserService;
+
     @Override
     public String createAdminUser(UserDTO userDTO) {
 
@@ -93,6 +97,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                             existingUserByNameAndMail.get().setRoleId(RoleConverter.convertToEntity(adminDTO));
 
+                            LocalDateTime now = LocalDateTime.now();
+                            existingUserByNameAndMail.get().setLastModifiedAt(now);
+
+                            Optional<UserEntity> anonymousUserId = userRepository.findByUserName("anonymousUser");
+
+
+                            existingUserByNameAndMail.get().setLastModifiedBy(anonymousUserId.get().getUserId());
+
+
                             userRepository.save(existingUserByNameAndMail.get());
 
 
@@ -102,6 +115,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                             Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
                             auditEntity.setTableId(tableId);
                             auditEntity.setAction("update");
+                            auditEntity.setLastModifiedAt(now);
+                            auditEntity.setLastModifiedBy(anonymousUserId.get().getUserId());
                             auditRepository.save(auditEntity);
 
 
@@ -145,6 +160,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             newUser.setRoleId(RoleConverter.convertToEntity(adminDTO));
 
+            LocalDateTime now = LocalDateTime.now();
+            newUser.setCreatedAt(now);
+
+            Optional<UserEntity> anonymousUserId = userRepository.findByUserName("anonymousUser");
+
+
+            newUser.setCreatedBy(anonymousUserId.get().getUserId());
 
             userRepository.save(newUser);
 

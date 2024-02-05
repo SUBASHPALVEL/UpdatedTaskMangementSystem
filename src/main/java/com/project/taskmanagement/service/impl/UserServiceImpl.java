@@ -1,5 +1,6 @@
 package com.project.taskmanagement.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import com.project.taskmanagement.entity.AuditEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
+import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.UserService;
 
 @Service
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private AuditRepository auditRepository;
 
+    @Autowired
+    private CurrentUserService currentUserService;
+
 
     @Override
     public String createUser(UserDTO userDTO) {
@@ -64,6 +69,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 existingUserByNameAndMail.get().setName(userDTO.getName());
                 existingUserByNameAndMail.get().setRoleId(userDTO.getRoleId());
 
+                LocalDateTime now = LocalDateTime.now();
+                existingUserByNameAndMail.get().setLastModifiedAt(now);
+                existingUserByNameAndMail.get().setLastModifiedBy(currentUserService.getCurrentUserId());
 
                 userRepository.save(existingUserByNameAndMail.get());
 
@@ -74,6 +82,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
                 auditEntity.setTableId(tableId);
                 auditEntity.setAction("update");
+                auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+                auditEntity.setLastModifiedAt(now);
                 auditRepository.save(auditEntity);
 
 
@@ -101,6 +111,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
 
+            LocalDateTime now = LocalDateTime.now();
+            newUser.setCreatedAt(now);
+            newUser.setCreatedBy(currentUserService.getCurrentUserId());
             userRepository.save(newUser);
 
 
@@ -160,6 +173,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setUserName(userDTO.getUserName());
             user.setUserMail(userDTO.getUserMail());
             user.setRoleId(userDTO.getRoleId());
+
+            LocalDateTime now = LocalDateTime.now();
+            user.setLastModifiedAt(now);
+
+            user.setLastModifiedBy(currentUserService.getCurrentUserId());
             userRepository.save(user);
 
 
@@ -169,6 +187,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
             auditEntity.setTableId(tableId);
             auditEntity.setAction("update");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
             auditRepository.save(auditEntity);
 
 
@@ -192,6 +212,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
             user.setActive(false);
+            LocalDateTime now = LocalDateTime.now();
+            user.setLastModifiedAt(now);
+            user.setLastModifiedBy(currentUserService.getCurrentUserId());
             userRepository.save(user);
 
 
@@ -201,6 +224,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
             auditEntity.setTableId(tableId);
             auditEntity.setAction("delete");
+            auditEntity.setLastModifiedAt(now);
+            auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
             auditRepository.save(auditEntity);
 
 
@@ -230,6 +255,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 String password = userDTO.getNewPassword();
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);
+                LocalDateTime now = LocalDateTime.now();
+                user.setLastModifiedAt(now);
+                user.setLastModifiedBy(currentUserService.getCurrentUserId());
                 userRepository.save(user);
 
 
@@ -239,6 +267,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 Long tableId = tableRegistryRepository.getTableIdByTableName("user_detail").getTableId();
                 auditEntity.setTableId(tableId);
                 auditEntity.setAction("update");
+                auditEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+                auditEntity.setLastModifiedAt(now);
                 auditRepository.save(auditEntity);
 
 
