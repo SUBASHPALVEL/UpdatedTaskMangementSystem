@@ -26,6 +26,8 @@ public class TaskConverter {
 
         taskDTO.setDueAt(taskEntity.getDueAt());
         taskDTO.setCompletedAt(taskEntity.getCompletedAt());
+        taskDTO.setCreatedAt(taskEntity.getCreatedAt());
+        taskDTO.setLastModifiedAt(taskEntity.getLastModifiedAt());
 
         return taskDTO;
     }
@@ -43,6 +45,7 @@ public class TaskConverter {
 
         taskEntity.setDueAt(taskDTO.getDueAt());
         taskEntity.setCompletedAt(taskDTO.getCompletedAt());
+        taskEntity.setLastModifiedAt(taskDTO.getLastModifiedAt());
 
         return taskEntity;
     }

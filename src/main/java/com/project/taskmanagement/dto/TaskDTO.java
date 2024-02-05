@@ -32,6 +32,10 @@ public class TaskDTO {
     @NotEmpty(message = "Task Due Date cannot be empty")
     private LocalDateTime dueAt;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime lastModifiedAt;
+
     private LocalDateTime completedAt;
 
     private List<UserDTO> assignedUsers;
