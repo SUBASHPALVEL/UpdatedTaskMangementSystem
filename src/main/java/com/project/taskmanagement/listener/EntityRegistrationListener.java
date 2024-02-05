@@ -1,6 +1,6 @@
 package com.project.taskmanagement.listener;
 
-import com.project.taskmanagement.repository.TableRegistryRepository;
+import com.project.taskmanagement.repository1.TableRegistryRepository;
 import com.project.taskmanagement.service.TableRegistryService;
 
 import jakarta.persistence.EntityManager;

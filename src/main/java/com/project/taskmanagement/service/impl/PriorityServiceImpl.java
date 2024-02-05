@@ -13,7 +13,7 @@ import com.project.taskmanagement.dto.PriorityDTO;
 import com.project.taskmanagement.entity.PriorityEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository.PriorityRepository;
+import com.project.taskmanagement.repository1.PriorityRepository;
 import com.project.taskmanagement.service.PriorityService;
 
 @Service

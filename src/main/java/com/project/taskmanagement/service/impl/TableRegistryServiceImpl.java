@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.taskmanagement.entity.TableRegistry;
-import com.project.taskmanagement.repository.TableRegistryRepository;
+import com.project.taskmanagement.repository1.TableRegistryRepository;
 import com.project.taskmanagement.service.TableRegistryService;
 
 @Service

@@ -19,9 +19,9 @@ import com.project.taskmanagement.entity.TaskEntity;
 import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
-import com.project.taskmanagement.repository.AuditRepository;
-import com.project.taskmanagement.repository.TableRegistryRepository;
-import com.project.taskmanagement.repository.TaskRepository;
+import com.project.taskmanagement.repository1.AuditRepository;
+import com.project.taskmanagement.repository1.TableRegistryRepository;
+import com.project.taskmanagement.repository1.TaskRepository;
 import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.TaskService;
 
@@ -52,7 +52,23 @@ public class TaskServiceImpl implements TaskService {
         List<UserDTO> usersDTOs = taskDTO.getAssignedUsers();
         List<UserEntity> usersEntities = new ArrayList<>();
         for (UserDTO userdto : usersDTOs) {
-            usersEntities.add(UserConverter.convertToEntity(userdto));
+
+            UserEntity userEntity = UserConverter.convertToEntity(userdto);
+
+            if (!userEntity.isActive()) {
+                List<ErrorModel> errorModelList = new ArrayList<>();
+                ErrorModel errorModel = new ErrorModel();
+                errorModel.setCode(messageSource.getMessage("user.not.active.code",
+                        new Object[] { userEntity.getUserId() }, LocaleContextHolder.getLocale()));
+                errorModel.setMessage(
+                        messageSource.getMessage("user.not.active.message", new Object[] { userEntity.getUserId() },
+                                LocaleContextHolder.getLocale()));
+                errorModelList.add(errorModel);
+                throw new BusinessException(errorModelList);
+
+            }
+
+            usersEntities.add(userEntity);
         }
         taskEntity.setAssignedUsers(usersEntities);
         taskEntity.setActive(true);
