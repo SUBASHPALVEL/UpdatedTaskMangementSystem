@@ -80,6 +80,18 @@ public class UserEntity implements UserDetails {
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
     @Override
+public String toString() {
+    return  "UserEntity{" +
+            "userId=" + userId +
+            ", name=" + name + 
+            ", userName=" + userName + 
+            ", userMail=" + userMail + 
+            ", roleId=" + roleId.getRoleId() +
+            ", isActive=" + isActive +
+            '}';
+}
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 

@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.util.stream.Collectors;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -88,5 +90,21 @@ public class TaskEntity {
     @JoinTable(name = "users_tasks", joinColumns = @JoinColumn(name = "taskId"), inverseJoinColumns = @JoinColumn(name = "userId"))
     @ManyToMany
     private List<UserEntity> assignedUsers = new ArrayList<>();
+
+
+    @Override
+    public String toString() {
+    return "TaskEntity{" +
+            "taskId=" + taskId +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", status=" + status.getStatusId()  + 
+            ", priority=" + priority.getPriorityId() + 
+            ", dueAt=" + dueAt +
+            ", completedAt=" + completedAt +
+            ", isActive=" + isActive +
+            ", assignedUsers=" + assignedUsers.stream().map(user -> user.getUserId().toString()).collect(Collectors.joining(", ")) +
+            '}';
+}
 
 }
