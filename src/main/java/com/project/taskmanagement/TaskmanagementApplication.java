@@ -10,6 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.taskmanagement.Repository.RoleRepository;
 import com.project.taskmanagement.Repository.UserRepository;
+import com.project.taskmanagement.converter.RoleConverter;
+import com.project.taskmanagement.converter.UserConverter;
+import com.project.taskmanagement.dto.RoleDTO;
 import com.project.taskmanagement.entity.RoleEntity;
 import com.project.taskmanagement.entity.UserEntity;
 
@@ -30,13 +33,18 @@ public class TaskmanagementApplication {
 			if (roleRepository.findByDesignation("ADMIN").isPresent())
 				return;
 
-			roleRepository.save(new RoleEntity(("ADMIN")));
-			roleRepository.save(new RoleEntity("USER"));
+			roleRepository.save(new RoleEntity("ADMIN"));
 
-			RoleEntity role = new RoleEntity((long) 1, "ADMIN");
-			UserEntity admin = new UserEntity((long) 1, "suba", encoder.encode("password"), role, "S@g.com");
+			Long adminRoleId = roleRepository.getRoleIdByDesignation("ADMIN").getRoleId();
 
-			userRepository.save(admin);
+            RoleDTO adminDTO = new RoleDTO();
+            adminDTO.setRoleId(adminRoleId);
+
+			RoleEntity role = RoleConverter.convertToEntity(adminDTO);
+			
+			UserEntity anonymousUser = new UserEntity( "anonymousUser", encoder.encode("password"), role, "anonymousUser@g.com", "anonymousUser");
+
+			userRepository.save(anonymousUser);
 		};
 	}
 

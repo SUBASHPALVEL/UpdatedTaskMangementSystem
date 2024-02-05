@@ -21,7 +21,7 @@ CREATE TABLE user_detail (
     user_name VARCHAR(50) NOT NULL UNIQUE,
     user_mail VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(60) NOT NULL,
-    designation BIGINT,
+    designation BIGINT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_by BIGINT DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

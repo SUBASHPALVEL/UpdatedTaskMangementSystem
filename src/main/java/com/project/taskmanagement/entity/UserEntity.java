@@ -137,12 +137,12 @@ public String toString() {
         this.roleId = roleId;
     }
 
-    public UserEntity(Long userId, String username, String password, RoleEntity roleId, String userMail) {
+    public UserEntity( String username, String password, RoleEntity roleId, String userMail, String name) {
         super();
-        this.userId = userId;
         this.userName = username;
         this.password = password;
         this.roleId = roleId;
         this.userMail = userMail;
+        this.name = name;
     }
 }

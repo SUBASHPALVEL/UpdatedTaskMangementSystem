@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -138,9 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             UserEntity userEntity = userOptional.get();
             UserDTO userDTO = userConverter.convertToDTO(userEntity);
             return userDTO;
-            // Alternative for mapper and converter
-            // UserDTO userDTO = new UserDTO();
-            // BeanUtils.copyProperties(userOptional.get(), userDTO);
+
 
         } else {
             List<ErrorModel> errorModelList = new ArrayList<>();
