@@ -96,8 +96,8 @@ public class TaskEntity {
     public String toString() {
     return "TaskEntity{" +
             "taskId=" + taskId +
-            ", title='" + title + '\'' +
-            ", description='" + description + '\'' +
+            ", title=" + title + 
+            ", description=" + description + 
             ", status=" + status.getStatusId()  + 
             ", priority=" + priority.getPriorityId() + 
             ", dueAt=" + dueAt +
