@@ -20,8 +20,10 @@ import com.project.taskmanagement.entity.UserEntity;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.exception.ErrorModel;
 import com.project.taskmanagement.repository.AuditRepository;
+import com.project.taskmanagement.repository.StatusRepository;
 import com.project.taskmanagement.repository.TableRegistryRepository;
 import com.project.taskmanagement.repository.TaskRepository;
+import com.project.taskmanagement.repository.UserRepository;
 import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.TaskService;
 
@@ -46,6 +48,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private CurrentUserService currentUserService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StatusRepository statusRepository;
+
     @Override
     public String createTask(TaskDTO taskDTO) {
         TaskEntity taskEntity = taskConverter.convertToEntity(taskDTO);
@@ -55,7 +63,7 @@ public class TaskServiceImpl implements TaskService {
 
             UserEntity userEntity = UserConverter.convertToEntity(userdto);
 
-            if (!userEntity.isActive()) {
+            if (!userRepository.existsByUserIdAndIsActiveTrue(userEntity.getUserId())) {
                 List<ErrorModel> errorModelList = new ArrayList<>();
                 ErrorModel errorModel = new ErrorModel();
                 errorModel.setCode(messageSource.getMessage("user.not.active.code",
@@ -76,6 +84,13 @@ public class TaskServiceImpl implements TaskService {
         LocalDateTime now = LocalDateTime.now();
         taskEntity.setCreatedAt(now);
         taskEntity.setCreatedBy(currentUserService.getCurrentUserId());
+
+        Long statusIdFromTable = statusRepository.getStatusIdByStatusLevel("Completed").getStatusId();
+        Long statusIdFromTaskDTO = taskDTO.getStatus().getStatusId();
+        if (statusIdFromTable.equals(statusIdFromTaskDTO)) {
+            taskEntity.setCompletedAt(now);
+        }
+
         taskRepository.save(taskEntity);
 
         String modifiedValue = taskEntity.toString();
@@ -158,15 +173,35 @@ public class TaskServiceImpl implements TaskService {
             List<UserEntity> updatedAssignedUsersEntities = new ArrayList<UserEntity>();
             for (UserDTO user : updatedAssignedUsers) {
                 UserEntity updatedUserEntity = UserConverter.convertToEntity(user);
+
+                if (!userRepository.existsByUserIdAndIsActiveTrue(updatedUserEntity.getUserId())) {
+                    List<ErrorModel> errorModelList = new ArrayList<>();
+                    ErrorModel errorModel = new ErrorModel();
+                    errorModel.setCode(messageSource.getMessage("user.not.active.code",
+                            new Object[] { updatedUserEntity.getUserId() }, LocaleContextHolder.getLocale()));
+                    errorModel.setMessage(
+                            messageSource.getMessage("user.not.active.message",
+                                    new Object[] { updatedUserEntity.getUserId() },
+                                    LocaleContextHolder.getLocale()));
+                    errorModelList.add(errorModel);
+                    throw new BusinessException(errorModelList);
+
+                }
+
                 updatedAssignedUsersEntities.add(updatedUserEntity);
             }
             updatedTaskEntity.setAssignedUsers(updatedAssignedUsersEntities);
             updatedTaskEntity.setActive(true);
-            updatedTaskEntity.setTaskId(taskId);
 
             LocalDateTime now = LocalDateTime.now();
             updatedTaskEntity.setLastModifiedAt(now);
             updatedTaskEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+
+            Long statusIdFromTable = statusRepository.getStatusIdByStatusLevel("Completed").getStatusId();
+            Long statusIdFromTaskDTO = taskDTO.getStatus().getStatusId();
+            if (statusIdFromTable.equals(statusIdFromTaskDTO)) {
+                updatedTaskEntity.setCompletedAt(now);
+            }
 
             taskRepository.save(updatedTaskEntity);
 

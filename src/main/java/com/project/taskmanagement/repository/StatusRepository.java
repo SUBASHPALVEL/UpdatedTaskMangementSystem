@@ -9,4 +9,7 @@ import com.project.taskmanagement.entity.StatusEntity;
 public interface StatusRepository extends JpaRepository<StatusEntity, Long> {
 
     boolean existsByStatusLevel(String statusLevel);
+
+    StatusEntity getStatusIdByStatusLevel(String statusLevel);
+
 }

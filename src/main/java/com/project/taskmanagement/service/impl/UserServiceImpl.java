@@ -175,12 +175,48 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String updateUser(Long userId, UserDTO userDTO) {
-        Optional<UserEntity> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            UserEntity user = userOptional.get();
+
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+
+            UserEntity user = optionalUser.get();
+
+            if (!userDTO.getUserName().equals(user.getUsername())) {
+                if (userRepository.existsByUserName(userDTO.getUserName())) {
+                    List<ErrorModel> errorModelList = new ArrayList<>();
+                    ErrorModel errorModel = new ErrorModel();
+                    errorModel.setCode(
+                            messageSource.getMessage("user.name.exists.code", null, LocaleContextHolder.getLocale()));
+                    errorModel.setMessage(
+                            messageSource.getMessage("user.name.exists.message", null,
+                                    LocaleContextHolder.getLocale()));
+                    errorModelList.add(errorModel);
+                    throw new BusinessException(errorModelList);
+                }
+
+                user.setUserName(userDTO.getUserName());
+            }
+
+            if (!userDTO.getUserMail().equals(user.getUserMail())) {
+
+                if (userRepository.existsByUserMail(userDTO.getUserMail())) {
+
+                    List<ErrorModel> errorModelList = new ArrayList<>();
+                    ErrorModel errorModel = new ErrorModel();
+                    errorModel.setCode(
+                            messageSource.getMessage("user.mail.exists.code", null, LocaleContextHolder.getLocale()));
+                    errorModel.setMessage(
+                            messageSource.getMessage("user.mail.exists.message", null,
+                                    LocaleContextHolder.getLocale()));
+                    errorModelList.add(errorModel);
+                    throw new BusinessException(errorModelList);
+
+                }
+
+                user.setUserMail(userDTO.getUserMail());
+            }
+
             user.setName(userDTO.getName());
-            user.setUserName(userDTO.getUserName());
-            user.setUserMail(userDTO.getUserMail());
             user.setRoleId(userDTO.getRoleId());
 
             LocalDateTime now = LocalDateTime.now();
@@ -210,6 +246,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             errorModelList.add(errorModel);
             throw new BusinessException(errorModelList);
         }
+
     }
 
     @Override
@@ -303,8 +340,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        System.out.println("In the user details service");
         return userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         messageSource.getMessage("user.mail.not_found", null, LocaleContextHolder.getLocale())));
