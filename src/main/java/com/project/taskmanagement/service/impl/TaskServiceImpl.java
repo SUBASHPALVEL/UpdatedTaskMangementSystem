@@ -27,6 +27,9 @@ import com.project.taskmanagement.repository.UserRepository;
 import com.project.taskmanagement.service.CurrentUserService;
 import com.project.taskmanagement.service.TaskService;
 
+import jakarta.transaction.Transactional;
+
+@Transactional
 @Service
 public class TaskServiceImpl implements TaskService {
 
