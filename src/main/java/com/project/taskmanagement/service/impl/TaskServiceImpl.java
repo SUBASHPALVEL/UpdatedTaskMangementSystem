@@ -166,9 +166,20 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public String updateTask(Long taskId, TaskDTO taskDTO) {
-        TaskEntity existingTaskEntity = taskRepository.findById(taskId).orElse(null);
-        if (existingTaskEntity != null) {
-            TaskEntity updatedTaskEntity = taskConverter.convertToEntity(taskDTO);
+        Optional<TaskEntity> existingTaskEntity = taskRepository.findById(taskId);
+        if (existingTaskEntity.isPresent()) {
+
+            TaskEntity updatedTaskEntity = existingTaskEntity.get();
+
+            TaskEntity taskEntityFromUser = taskConverter.convertToEntity(taskDTO);
+
+            updatedTaskEntity.setTitle(taskEntityFromUser.getTitle());
+            updatedTaskEntity.setDescription(taskEntityFromUser.getDescription());
+            updatedTaskEntity.setStatus(taskEntityFromUser.getStatus());
+            updatedTaskEntity.setPriority(taskEntityFromUser.getPriority());
+            updatedTaskEntity.setDueAt(taskEntityFromUser.getDueAt());
+            updatedTaskEntity.setAssignedUsers(taskEntityFromUser.getAssignedUsers());
+
             List<UserDTO> updatedAssignedUsers = taskDTO.getAssignedUsers();
             List<UserEntity> updatedAssignedUsersEntities = new ArrayList<UserEntity>();
             for (UserDTO user : updatedAssignedUsers) {
@@ -196,6 +207,7 @@ public class TaskServiceImpl implements TaskService {
             LocalDateTime now = LocalDateTime.now();
             updatedTaskEntity.setLastModifiedAt(now);
             updatedTaskEntity.setLastModifiedBy(currentUserService.getCurrentUserId());
+            updatedTaskEntity.setCompletedAt(null);
 
             Long statusIdFromTable = statusRepository.getStatusIdByStatusLevel("Completed").getStatusId();
             Long statusIdFromTaskDTO = taskDTO.getStatus().getStatusId();
