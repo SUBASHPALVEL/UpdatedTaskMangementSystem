@@ -53,6 +53,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private CurrentUserService currentUserService;
 
+/**
+ * Creates a new user based on the information provided in the UserDTO object.
+ * If a user with the same username and email already exists, it activates the existing user.
+ * If a user with the same email but different username exists, it throws a BusinessException.
+ * If a user with the same username but different email exists, it throws a BusinessException.
+ * If no user with the same username or email exists, it creates a new user.
+ *
+ * @param userDTO The UserDTO object containing the information of the user to be created.
+ * @return A message indicating the result of the operation (e.g., "User created successfully").
+ * @throws BusinessException If a user with the same username and email already exists and is active,
+ *                           or if a user with the same email or username exists but is inactive.
+ */
+
+
+
     @Override
     public String createUser(UserDTO userDTO) {
 
