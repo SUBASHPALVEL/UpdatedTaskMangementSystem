@@ -28,6 +28,13 @@ import com.project.taskmanagement.service.UserService;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * Providing functionality for user management.
+ * 
+ * @author Subash
+ * @since 07/02/2024
+ */
+
 @Transactional
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -53,19 +60,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private CurrentUserService currentUserService;
 
-/**
- * Creates a new user based on the information provided in the UserDTO object.
- * If a user with the same username and email already exists, it activates the existing user.
- * If a user with the same email but different username exists, it throws a BusinessException.
- * If a user with the same username but different email exists, it throws a BusinessException.
- * If no user with the same username or email exists, it creates a new user.
- *
- * @param userDTO The UserDTO object containing the information of the user to be created.
- * @return A message indicating the result of the operation (e.g., "User created successfully").
- * @throws BusinessException If a user with the same username and email already exists and is active,
- *                           or if a user with the same email or username exists but is inactive.
- */
-
+    /**
+     * Creates a new user based on the information provided in the UserDTO object.
+     * If a user with the same username and email already exists, it activates the
+     * existing user.
+     * If a user with the same email but different username exists, it throws a
+     * BusinessException.
+     * If a user with the same username but different email exists, it throws a
+     * BusinessException.
+     * If no user with the same username or email exists, it creates a new user.
+     *
+     * @param userDTO The UserDTO object containing the information of the user to
+     *                be created.
+     * @return A message indicating the result of the operation (e.g., "User created
+     *         successfully").
+     * @throws BusinessException If a user with the same username and email already
+     *                           exists and is active,
+     *                           or if a user with the same email or username exists
+     *                           but is inactive.
+     */
 
     @Override
     public String createUser(UserDTO userDTO) {
@@ -159,6 +172,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
+    /**
+     * Retrieves a list of all active users from the database and converts them into
+     * UserDTO objects.
+     * 
+     * @return A list of UserDTO objects representing all active users.
+     */
+
     @Override
     public List<UserDTO> getAllUsers() {
         List<UserEntity> users = userRepository.findByIsActiveTrue();
@@ -169,6 +189,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         return userDTOList;
     }
+
+    /**
+     * Retrieves the user with the specified ID from the database and returns it as
+     * a UserDTO object.
+     * If no user with the given ID is found, a BusinessException is thrown.
+     * 
+     * @param userId The ID of the user to retrieve.
+     * @return A UserDTO object representing the user with the specified ID.
+     * @throws BusinessException If no user with the given ID is found in the
+     *                           database.
+     */
 
     @Override
     public UserDTO getUserById(Long userId) {
@@ -189,6 +220,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new BusinessException(errorModelList);
         }
     }
+
+    /**
+     * Updates the user with the specified ID using the information provided in the
+     * UserDTO object.
+     * If the user with the given ID is not found, a BusinessException is thrown.
+     * If the provided username or email already exists for another user, a
+     * BusinessException is thrown.
+     * 
+     * @param userId  The ID of the user to be updated.
+     * @param userDTO The UserDTO object containing the updated information for the
+     *                user.
+     * @return A message indicating the result of the operation (e.g., "User updated
+     *         successfully").
+     * @throws BusinessException If the user with the given ID is not found,
+     *                           or if the provided username or email already exists
+     *                           for another user.
+     */
 
     @Override
     public String updateUser(Long userId, UserDTO userDTO) {
@@ -266,6 +314,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
+    /**
+     * Marks the user with the specified ID as inactive (soft delete).
+     * If no user with the given ID is found, a BusinessException is thrown.
+     * 
+     * @param userId The ID of the user to be marked as inactive.
+     * @return A message indicating the result of the operation (e.g., "User deleted
+     *         successfully").
+     * @throws BusinessException If no user with the given ID is found in the
+     *                           database.
+     */
+
     @Override
     public String deleteUser(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
@@ -299,6 +358,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new BusinessException(errorModelList);
         }
     }
+
+    /**
+     * Changes the password for the user with the specified username.
+     * If the username is not found or if the old password provided in the UserDTO
+     * object
+     * does not match the current password stored in the database, a
+     * BusinessException is thrown.
+     * 
+     * @param userDTO The UserDTO object containing the username, old password, and
+     *                new password.
+     * @return A message indicating the result of the password change operation.
+     * @throws BusinessException If the username is not found,
+     *                           or if the old password provided does not match the
+     *                           current password.
+     */
 
     @Override
     public String changePassword(UserDTO userDTO) {
@@ -354,6 +428,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new BusinessException(errorModelList);
         }
     }
+
+    /**
+     * Loads the user details for the given username.
+     * 
+     * This method is used by Spring Security to retrieve the user details
+     * (UserDetails)
+     * for authentication purposes based on the provided username.
+     * 
+     * @param username The username of the user whose details are to be loaded.
+     * @return The UserDetails object representing the user with the specified
+     *         username.
+     * @throws UsernameNotFoundException If no user with the given username is found
+     *                                   in the database.
+     */
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
