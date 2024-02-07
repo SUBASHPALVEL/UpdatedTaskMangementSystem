@@ -195,7 +195,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserDTO loginAdminUser(String userName, String password) {
+    public UserDTO loginUser(String userName, String password) {
 
         Optional<UserEntity> userOptional = userRepository.findByUserName(userName);
         if (userOptional.isPresent()) {

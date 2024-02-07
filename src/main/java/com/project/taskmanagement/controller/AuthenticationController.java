@@ -39,7 +39,7 @@ public class AuthenticationController {
     @PostMapping("/admin/login")
     public ResponseEntity<?> loginUser(@RequestBody UserDTO body) {
         try {
-            UserDTO user = authenticationService.loginAdminUser(body.getUserName(), body.getPassword());
+            UserDTO user = authenticationService.loginUser(body.getUserName(), body.getPassword());
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
