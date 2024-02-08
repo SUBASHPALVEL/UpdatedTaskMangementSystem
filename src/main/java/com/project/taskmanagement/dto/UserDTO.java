@@ -11,6 +11,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object (DTO) for representing user information.
+ * @author Subash Palvel
+ * @since 07/02/2024
+ */
+
 @Setter
 @Getter
 public class UserDTO {

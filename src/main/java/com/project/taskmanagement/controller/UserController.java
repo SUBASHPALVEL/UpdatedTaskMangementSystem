@@ -20,6 +20,13 @@ import com.project.taskmanagement.dto.UserDTO;
 import com.project.taskmanagement.exception.BusinessException;
 import com.project.taskmanagement.service.UserService;
 
+/**
+ * Controller class for handling user-related HTTP requests.
+ * 
+ * @author Subash Palvel
+ * @since 07/02/2024
+ */
+
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/users")
@@ -27,6 +34,15 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * Endpoint for creating a new user.
+     * 
+     * @param userDTO The UserDTO representing the new user to be created.
+     * @return ResponseEntity containing a success message if the user was created
+     *         successfully,
+     *         or an error message if creation failed.
+     */
 
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
@@ -42,6 +58,14 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint for retrieving all users.
+     * 
+     * @return ResponseEntity containing a list of UserDTO objects representing all
+     *         users,
+     *         or an error message if retrieval failed.
+     */
+
     @GetMapping()
     public ResponseEntity<?> getAllUsers() {
 
@@ -53,6 +77,14 @@ public class UserController {
                     HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    /**
+     * Endpoint for retrieving a user by ID.
+     * 
+     * @param userId The ID of the user to retrieve.
+     * @return ResponseEntity containing a UserDTO representing the requested user,
+     *         or an error message if retrieval failed.
+     */
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
@@ -67,8 +99,17 @@ public class UserController {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
-
     }
+
+    /**
+     * Endpoint for updating an existing user.
+     * 
+     * @param userId  The ID of the user to update.
+     * @param userDTO The updated UserDTO representing the changes to be made.
+     * @return ResponseEntity containing a success message if the user was updated
+     *         successfully,
+     *         or an error message if update failed.
+     */
 
     @PutMapping("/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody UserDTO userDTO) {
@@ -84,6 +125,15 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint for deleting a user by ID.
+     * 
+     * @param userId The ID of the user to delete.
+     * @return ResponseEntity containing a success message if the user was deleted
+     *         successfully,
+     *         or an error message if deletion failed.
+     */
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         try {
@@ -97,6 +147,13 @@ public class UserController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Endpoint for changing a user's password.
+     * @param userDTO The UserDTO containing the user's ID and new password.
+     * @return ResponseEntity containing a success message if the password was changed successfully,
+     *         or an error message if the operation failed.
+     */
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody UserDTO userDTO) {

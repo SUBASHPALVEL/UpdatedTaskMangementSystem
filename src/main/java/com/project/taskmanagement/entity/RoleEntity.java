@@ -27,27 +27,10 @@ public class RoleEntity implements GrantedAuthority {
     @Column(name = "designation", nullable = false, unique = true)
     private String designation;
 
-    public RoleEntity() {
-        super();
-    }
-
-    public RoleEntity(Long roleId, String designation) {
-        this.roleId = roleId;
-        this.designation = designation;
-    }
-
     @Override
     public String getAuthority() {
 
         return getDesignation();
-    }
-
-    public RoleEntity(String designation) {
-        this.designation = designation;
-    }
-
-    public RoleEntity(Long roleId) {
-        this.roleId = roleId;
     }
 
 }

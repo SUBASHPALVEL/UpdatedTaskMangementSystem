@@ -68,7 +68,6 @@ public class StatusController {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @DeleteMapping("/{statusId}")

@@ -31,7 +31,7 @@ import jakarta.transaction.Transactional;
 /**
  * Providing functionality for user management.
  * 
- * @author Subash
+ * @author Subash Palvel
  * @since 07/02/2024
  */
 

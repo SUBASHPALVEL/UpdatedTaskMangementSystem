@@ -17,6 +17,8 @@ import lombok.Setter;
 
 /**
  * Entity class representing a user.
+ * @author Subash Palvel
+ * @since 07/02/2024
  */
 
 @Setter
