@@ -128,11 +128,4 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    /**
-     * Constructs a new UserEntity object.
-     */
-    public UserEntity() {
-        super();
-    }
-
 }
