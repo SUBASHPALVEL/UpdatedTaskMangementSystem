@@ -30,8 +30,8 @@ public class RoleController {
         try {
             roleService.createRole(roleDTO);
             return new ResponseEntity<>("Role created successfully", HttpStatus.CREATED);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -43,8 +43,11 @@ public class RoleController {
         try {
             RoleDTO roleDTO = roleService.getRoleByUserId(userId);
             return new ResponseEntity<>(roleDTO, HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -52,9 +55,9 @@ public class RoleController {
     public ResponseEntity<?> getAllRoles() {
         try {
             return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
@@ -65,9 +68,9 @@ public class RoleController {
         try {
             roleService.updateRole(roleId, roleDTO);
             return new ResponseEntity<>("Role updated successfully", HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception bex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -78,9 +81,9 @@ public class RoleController {
         try {
             roleService.deleteRole(roleId);
             return new ResponseEntity<>("Role deleted successfully", HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(e.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

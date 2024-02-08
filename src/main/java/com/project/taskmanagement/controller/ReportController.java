@@ -25,7 +25,7 @@ public class ReportController {
         try {
             Map<String, Object> result = reportService.getTaskVsAssignReport();
             return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }

@@ -33,7 +33,7 @@ public class TaskController {
             String result = taskService.createTask(taskDTO);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -46,7 +46,7 @@ public class TaskController {
         try {
             List<TaskDTO> tasks = taskService.getAllTasks();
             return new ResponseEntity<>(tasks, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
@@ -60,8 +60,8 @@ public class TaskController {
             TaskDTO task = taskService.getTaskById(taskId);
             return new ResponseEntity<>(task, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
@@ -74,7 +74,7 @@ public class TaskController {
         try {
             List<TaskDTO> tasks = taskService.getTasksByUserId(userId);
             return new ResponseEntity<>(tasks, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
@@ -86,8 +86,8 @@ public class TaskController {
             String result = taskService.updateTask(taskId, taskDTO);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -99,8 +99,8 @@ public class TaskController {
             String result = taskService.deleteTask(taskId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

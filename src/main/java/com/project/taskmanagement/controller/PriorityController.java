@@ -32,8 +32,9 @@ public class PriorityController {
         try {
             String createdPriority = priorityService.createPriority(priorityDTO);
             return new ResponseEntity<>(createdPriority, HttpStatus.CREATED);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -46,7 +47,7 @@ public class PriorityController {
         try {
             List<PriorityDTO> priorities = priorityService.getAllPriorities();
             return new ResponseEntity<>(priorities, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
         }
@@ -57,9 +58,10 @@ public class PriorityController {
         try {
             String updatedPriority = priorityService.updatePriority(priorityId, priorityDTO);
             return new ResponseEntity<>(updatedPriority, HttpStatus.OK);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -70,9 +72,10 @@ public class PriorityController {
         try {
             priorityService.deletePriority(priorityId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (BusinessException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        } catch (BusinessException bex) {
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+        } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -44,8 +44,6 @@ public class TaskConverter {
         taskEntity.setPriority(priorityEntity);
 
         taskEntity.setDueAt(taskDTO.getDueAt());
-        taskEntity.setCompletedAt(taskDTO.getCompletedAt());
-        taskEntity.setLastModifiedAt(taskDTO.getLastModifiedAt());
 
         return taskEntity;
     }

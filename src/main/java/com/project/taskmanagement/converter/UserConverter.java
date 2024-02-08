@@ -22,13 +22,11 @@ public class UserConverter {
 
     public static UserEntity convertToEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUserId(userDTO.getUserId());
         userEntity.setName(userDTO.getName());
         userEntity.setUserName(userDTO.getUserName());
         userEntity.setUserMail(userDTO.getUserMail());
         userEntity.setPassword(userDTO.getPassword());
         userEntity.setRoleId(userDTO.getRoleId());
-        userEntity.setActive(userDTO.isActive());
         return userEntity;
     }
 }
