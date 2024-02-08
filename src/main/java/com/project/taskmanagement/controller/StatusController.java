@@ -34,7 +34,8 @@ public class StatusController {
             String createdStatus = statusService.createStatus(statusDTO);
             return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -61,7 +62,8 @@ public class StatusController {
             String updatedStatus = statusService.updateStatus(statusId, statusDTO);
             return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,7 +78,8 @@ public class StatusController {
             statusService.deleteStatus(statusId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);

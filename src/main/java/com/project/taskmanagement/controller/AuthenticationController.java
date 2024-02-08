@@ -28,7 +28,8 @@ public class AuthenticationController {
             String result = authenticationService.createAdminUser(userDTO);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
@@ -44,7 +45,8 @@ public class AuthenticationController {
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);

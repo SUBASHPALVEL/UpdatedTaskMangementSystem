@@ -34,7 +34,8 @@ public class UserController {
             String result = userService.createUser(userDTO);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -60,7 +61,8 @@ public class UserController {
             UserDTO user = userService.getUserById(userId);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.NOT_ACCEPTABLE);
@@ -74,7 +76,8 @@ public class UserController {
             String result = userService.updateUser(userId, userDTO);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,7 +90,8 @@ public class UserController {
             String result = userService.deleteUser(userId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -101,7 +105,8 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.OK);
 
         } catch (BusinessException bex) {
-            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(), HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
+            return new ResponseEntity<>(bex.getErrorList().get(0).getMessage(),
+                    HttpStatus.valueOf(bex.getErrorList().get(0).getCode()));
         } catch (Exception ex) {
             return new ResponseEntity<>("An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
